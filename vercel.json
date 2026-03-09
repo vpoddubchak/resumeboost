@@ -4,7 +4,6 @@
   "installCommand": "npm ci",
   "framework": "nextjs",
   "outputDirectory": ".next",
-  "functionsDirectory": "app/api",
   "env": {
     "DATABASE_URL": "@database_url",
     "NEXTAUTH_SECRET": "@nextauth_secret",
@@ -22,9 +21,6 @@
     }
   },
   "regions": ["iad1"],
-  "git": {
-    "deploymentEnabled": true
-  },
   "crons": [
     {
       "path": "/api/analytics/cleanup",
