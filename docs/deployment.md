@@ -353,36 +353,6 @@ export class Metrics {
 }
 ```
 
-### Health Checks
-
-#### Health Endpoint
-```typescript
-// app/api/health/route.ts
-export async function GET() {
-  try {
-    // Check database connection
-    await db.query('SELECT 1');
-    
-    // Check Redis connection
-    await redis.ping();
-    
-    return Response.json({
-      status: 'healthy',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      version: process.env.npm_package_version,
-    });
-  } catch (error) {
-    return Response.json(
-      {
-        status: 'unhealthy',
-        error: error.message,
-      },
-      { status: 500 }
-    );
-  }
-}
-```
 
 ## Performance Optimization
 
