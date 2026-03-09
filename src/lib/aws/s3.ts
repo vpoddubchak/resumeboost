@@ -1,12 +1,20 @@
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
+// Environment variable validation
+const requiredEnvVars = ['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY'];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+  throw new Error(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
+}
+
 // S3 Client configuration
 const s3Client = new S3Client({
   region: process.env.AWS_REGION || 'us-east-1',
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!
   }
 });
 
@@ -19,21 +27,26 @@ export async function uploadFileToS3(
   fileBuffer: Buffer,
   contentType: string
 ): Promise<{ key: string; url: string }> {
-  const key = `uploads/${fileName}`;
-  
-  const command = new PutObjectCommand({
-    Bucket: S3_BUCKET,
-    Key: key,
-    Body: fileBuffer,
-    ContentType: contentType
-  });
+  try {
+    const key = `uploads/${fileName}`;
+    
+    const command = new PutObjectCommand({
+      Bucket: S3_BUCKET,
+      Key: key,
+      Body: fileBuffer,
+      ContentType: contentType
+    });
 
-  await s3Client.send(command);
-  
-  return {
-    key,
-    url: `https://${S3_BUCKET}.s3.${process.env.AWS_REGION || 'us-east-1'}.amazonaws.com/${key}`
-  };
+    await s3Client.send(command);
+    
+    return {
+      key,
+      url: `https://${S3_BUCKET}.s3.${process.env.AWS_REGION || 'us-east-1'}.amazonaws.com/${key}`
+    };
+  } catch (error) {
+    console.error('Error uploading file to S3:', error);
+    throw new Error(`Failed to upload file to S3: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
 }
 
 // Generate presigned URL for file upload

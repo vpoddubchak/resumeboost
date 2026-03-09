@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '../../../lib/prisma';
+import { PrismaClient } from '@prisma/client';
+
+// Database connection
+const prisma = new PrismaClient();
 
 // GET /api/users - List all users
 export async function GET(request: NextRequest) {

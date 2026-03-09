@@ -10,6 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // Users table for user management
@@ -47,6 +48,8 @@ model Upload {
   analyses Analysis[]
 
   @@map("uploads")
+  @@index([user_id])
+  @@index([created_at])
 }
 
 // Analyses table for AI results
@@ -106,4 +109,7 @@ model Analytics {
   user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 
   @@map("analytics")
+  @@index([user_id])
+  @@index([created_at])
+  @@index([event_type])
 }

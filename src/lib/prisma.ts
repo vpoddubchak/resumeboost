@@ -1,15 +1,17 @@
+import { PrismaClient } from '@prisma/client';
+
 // Database connection singleton
-let prisma: any;
+let prisma: PrismaClient;
 
 declare global {
-  var __prisma: any;
+  var __prisma: PrismaClient | undefined;
 }
 
 if (process.env.NODE_ENV === 'production') {
-  prisma = require('@prisma/client').PrismaClient();
+  prisma = new PrismaClient();
 } else {
   if (!global.__prisma) {
-    global.__prisma = require('@prisma/client').PrismaClient();
+    global.__prisma = new PrismaClient();
   }
   prisma = global.__prisma;
 }
