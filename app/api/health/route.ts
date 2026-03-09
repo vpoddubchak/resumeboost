@@ -1,5 +1,7 @@
-export default function handler(req, res) {
-  res.status(200).json({ 
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  return NextResponse.json({ 
     status: 'healthy',
     timestamp: new Date().toISOString(),
     service: 'ResumeBoost API',
@@ -7,4 +9,3 @@ export default function handler(req, res) {
     version: '1.0.0'
   });
 }
-// Force redeploy Mon Mar  9 23:19:09 EET 2026
