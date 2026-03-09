@@ -154,6 +154,4 @@ jobs:
     - name: Health Check
       run: |
         echo "Testing health endpoint..."
-        curl -f https://resume-boost.vercel.app/api/status || exit 1
-        echo "Testing original health endpoint..."
-        curl -f https://resume-boost.vercel.app/api/health || echo "Health endpoint still failing"
+        curl -f https://resume-boost.vercel.app/api/health || exit 1
