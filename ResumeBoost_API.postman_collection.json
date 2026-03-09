@@ -1,0 +1,562 @@
+{
+	"info": {
+		"_postman_id": "resumeboost-api-collection",
+		"name": "ResumeBoost API - Complete",
+		"description": "Complete API collection for ResumeBoost application with real database integration",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/users",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "users"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john.doe@example.com\",\n    \"password_hash\": \"hashed_password_123\",\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/users",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "users"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/users/1",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "users", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"John Updated\",\n    \"last_name\": \"Doe Updated\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/users/1",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "users", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/users/1",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "users", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Uploads",
+			"item": [
+				{
+					"name": "Get All Uploads",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/uploads",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "uploads"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Uploads by User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/uploads?user_id=1",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "uploads"],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Upload",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 1,\n    \"file_name\": \"resume.pdf\",\n    \"file_path\": \"/uploads/resume.pdf\",\n    \"file_size\": 1024000,\n    \"mime_type\": \"application/pdf\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/uploads",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "uploads"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Analyses",
+			"item": [
+				{
+					"name": "Get All Analyses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/analyses",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "analyses"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Analyses by User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/analyses?user_id=1",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "analyses"],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Analysis",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"upload_id\": 1,\n    \"user_id\": 1,\n    \"analysis_data\": {\n        \"score\": 85,\n        \"keywords\": [\"javascript\", \"react\", \"nodejs\"],\n        \"sections\": [\"skills\", \"experience\", \"education\"]\n    },\n    \"score\": 85,\n    \"recommendations\": {\n        \"improve_summary\": true,\n        \"add_projects\": true,\n        \"update_skills\": false\n    }\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/analyses",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "analyses"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Consultations",
+			"item": [
+				{
+					"name": "Get All Consultations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/consultations",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "consultations"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Consultations by User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/consultations?user_id=1",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "consultations"],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Consultation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 1,\n    \"consultation_date\": \"2026-03-15T14:00:00Z\",\n    \"status\": \"scheduled\",\n    \"notes\": \"Initial resume review consultation\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/consultations",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "consultations"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Portfolio",
+			"item": [
+				{
+					"name": "Get All Portfolio Content",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/portfolio",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "portfolio"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Featured Content",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/portfolio?is_featured=true",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "portfolio"],
+							"query": [
+								{
+									"key": "is_featured",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Portfolio Content",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"React Dashboard Project\",\n    \"description\": \"A modern dashboard built with React and TypeScript\",\n    \"content_type\": \"project\",\n    \"file_url\": \"https://example.com/dashboard-demo.png\",\n    \"is_featured\": true\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/portfolio",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "portfolio"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Analytics",
+			"item": [
+				{
+					"name": "Get All Analytics Events",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/analytics",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "analytics"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Events by User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/analytics?user_id=1",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "analytics"],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Analytics Event",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 1,\n    \"event_type\": \"resume_uploaded\",\n    \"event_data\": {\n        \"file_size\": 1024000,\n        \"file_type\": \"pdf\",\n        \"upload_source\": \"web\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/analytics",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "analytics"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Files (AWS S3)",
+			"item": [
+				{
+					"name": "Generate Upload URL",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fileName\": \"resume.pdf\",\n    \"file_size\": 1024000,\n    \"mime_type\": \"application/pdf\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/files/upload-url",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "files", "upload-url"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Download URL",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"file_key\": \"uploads/resume.pdf\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/files/download-url",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "files", "download-url"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Complete User Flow",
+			"item": [
+				{
+					"name": "1. Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test.user@example.com\",\n    \"password_hash\": \"secure_hash_123\",\n    \"first_name\": \"Test\",\n    \"last_name\": \"User\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/users",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "users"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Create Upload",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 1,\n    \"file_name\": \"test-resume.pdf\",\n    \"file_path\": \"/uploads/test-resume.pdf\",\n    \"file_size\": 512000,\n    \"mime_type\": \"application/pdf\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/uploads",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "uploads"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Create Analysis",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"upload_id\": 1,\n    \"user_id\": 1,\n    \"analysis_data\": {\n        \"score\": 78,\n        \"sections\": [\"experience\", \"skills\"]\n    },\n    \"score\": 78\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/analyses",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "analyses"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Track Analytics",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 1,\n    \"event_type\": \"analysis_completed\",\n    \"event_data\": {\"score\": 78}\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/analytics",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "analytics"]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}

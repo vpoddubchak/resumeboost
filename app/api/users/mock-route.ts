@@ -1,41 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 
-// Database connection
-const prisma = new PrismaClient();
+// Mock users storage (temporary solution)
+let users = [
+  {
+    user_id: 1,
+    email: 'test@example.com',
+    first_name: 'Test',
+    last_name: 'User',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  }
+];
 
 // GET /api/users - List all users
 export async function GET(request: NextRequest) {
-  try {
-    const users = await prisma.user.findMany({
-      select: {
-        user_id: true,
-        email: true,
-        first_name: true,
-        last_name: true,
-        created_at: true,
-        updated_at: true
-      }
-    });
-
-    return NextResponse.json({
-      success: true,
-      data: users,
-      meta: {
-        timestamp: new Date().toISOString(),
-        count: users.length
-      }
-    });
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    return NextResponse.json({
-      success: false,
-      error: {
-        code: 'DATABASE_ERROR',
-        message: 'Failed to fetch users'
-      }
-    }, { status: 500 });
-  }
+  return NextResponse.json({
+    success: true,
+    data: users,
+    meta: {
+      timestamp: new Date().toISOString(),
+      count: users.length
+    }
+  });
 }
 
 // POST /api/users - Create new user
@@ -56,10 +42,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
-    });
-
+    const existingUser = users.find(u => u.email === email);
     if (existingUser) {
       return NextResponse.json({
         success: false,
@@ -71,26 +54,23 @@ export async function POST(request: NextRequest) {
     }
 
     // Create new user
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password_hash,
-        first_name,
-        last_name
-      },
-      select: {
-        user_id: true,
-        email: true,
-        first_name: true,
-        last_name: true,
-        created_at: true,
-        updated_at: true
-      }
-    });
+    const newUser = {
+      user_id: Math.max(...users.map(u => u.user_id)) + 1,
+      email,
+      first_name,
+      last_name,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    users.push(newUser);
+
+    // Return user without password
+    const userResponse = { ...newUser };
 
     return NextResponse.json({
       success: true,
-      data: user,
+      data: userResponse,
       meta: {
         timestamp: new Date().toISOString()
       }

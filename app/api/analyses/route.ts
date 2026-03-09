@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '../../../lib/prisma';
+import { PrismaClient } from '@prisma/client';
+
+// Database connection singleton
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined };
+
+export const prisma = globalForPrisma.prisma ?? new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // GET /api/analyses - List all analyses
 export async function GET(request: NextRequest) {
@@ -66,6 +73,7 @@ export async function POST(request: NextRequest) {
     const analysis = await prisma.analysis.create({
       data: {
         upload_id: parseInt(upload_id),
+        user_id: 1, // TODO: Get from authenticated user
         analysis_data,
         score: score ? parseInt(score) : null,
         recommendations
