@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    appDir: true
-  }
+  // Next.js 16.x automatically uses App Router when app/ folder exists
 };
 
 export default nextConfig;
