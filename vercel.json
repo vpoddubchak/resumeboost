@@ -10,10 +10,5 @@
       "path": "/api/analytics/cleanup",
       "schedule": "0 2 * * *"
     }
-  ],
-  "functions": {
-    "app/api/health/route.ts": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  ]
 }
