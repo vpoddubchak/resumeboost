@@ -1,4 +1,4 @@
-name: ResumeBoost CI/CD Pipeline (Simplified)
+name: ResumeBoost CI/CD Pipeline (Fixed)
 
 on:
   push:
