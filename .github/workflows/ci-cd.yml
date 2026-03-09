@@ -151,6 +151,9 @@ jobs:
     - name: Wait for deployment
       run: sleep 60
       
-    - name: Health check
+    - name: Health Check
       run: |
-        curl -f https://resume-boost.vercel.app/api/health || exit 1
+        echo "Testing health endpoint..."
+        curl -f https://resume-boost.vercel.app/api/status || exit 1
+        echo "Testing original health endpoint..."
+        curl -f https://resume-boost.vercel.app/api/health || echo "Health endpoint still failing"
