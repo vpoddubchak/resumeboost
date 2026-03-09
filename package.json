@@ -13,8 +13,11 @@
     "type-check": "tsc --noEmit",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
+    "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
-    "db:seed": "tsx scripts/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "build:docs": "swagger-jsdoc -d swaggerDef.js -o docs/api.json app/api/**/*.ts",
+    "postbuild": "next-sitemap"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1004.0",
