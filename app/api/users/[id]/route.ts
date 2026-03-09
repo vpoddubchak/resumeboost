@@ -11,10 +11,11 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 // GET /api/users/[id] - Get specific user
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user_id = parseInt(params.id);
+    const { id } = await params;
+    const user_id = parseInt(id);
     
     if (isNaN(user_id)) {
       return NextResponse.json({
@@ -70,10 +71,11 @@ export async function GET(
 // PUT /api/users/[id] - Update user
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user_id = parseInt(params.id);
+    const { id } = await params;
+    const user_id = parseInt(id);
     const body = await request.json();
     const { first_name, last_name } = body;
 
@@ -126,10 +128,11 @@ export async function PUT(
 // DELETE /api/users/[id] - Delete user
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user_id = parseInt(params.id);
+    const { id } = await params;
+    const user_id = parseInt(id);
     
     if (isNaN(user_id)) {
       return NextResponse.json({
