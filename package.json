@@ -16,7 +16,7 @@
     "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
-    "build:docs": "swagger-jsdoc -d swaggerDef.js -o docs/api.json app/api/**/*.ts",
+    "build:docs": "echo 'Documentation generation skipped - use swagger-jsdoc manually'",
     "postbuild": "next-sitemap"
   },
   "dependencies": {
