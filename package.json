@@ -16,8 +16,7 @@
     "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
-    "build:docs": "echo 'Documentation generation skipped - use swagger-jsdoc manually'",
-    "postbuild": "next-sitemap"
+    "build:docs": "echo 'Documentation generation skipped - use swagger-jsdoc manually'"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1004.0",
