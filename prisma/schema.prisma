@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Users table for user management
+model User {
+  user_id      Int      @id @default(autoincrement())
+  email        String   @unique
+  password_hash String  @db.VarChar(255)
+  first_name   String?  @db.VarChar(100)
+  last_name    String?  @db.VarChar(100)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  // Relations
+  uploads       Upload[]
+  analyses      Analysis[]
+  consultations Consultation[]
+  analytics     Analytics[]
+
+  @@map("users")
+}
+
+// Uploads table for resume files
+model Upload {
+  upload_id     Int      @id @default(autoincrement())
+  user_id       Int
+  file_name     String   @db.VarChar(255)
+  file_path     String   @db.VarChar(500)
+  file_size     Int
+  mime_type     String   @db.VarChar(100)
+  upload_status String   @default("uploaded") @db.VarChar(50)
+  created_at    DateTime @default(now())
+
+  // Relations
+  user    User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  analyses Analysis[]
+
+  @@map("uploads")
+}
+
+// Analyses table for AI results
+model Analysis {
+  analysis_id      Int      @id @default(autoincrement())
+  upload_id        Int
+  user_id          Int
+  analysis_data    Json
+  score            Int?
+  recommendations Json?
+  created_at       DateTime @default(now())
+
+  // Relations
+  upload Upload @relation(fields: [upload_id], references: [upload_id], onDelete: Cascade)
+  user   User   @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("analyses")
+}
+
+// Consultations table for booking
+model Consultation {
+  consultation_id   Int      @id @default(autoincrement())
+  user_id           Int
+  consultation_date DateTime
+  status            String   @default("scheduled") @db.VarChar(50)
+  notes             String?
+  created_at        DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("consultations")
+}
+
+// Portfolio_content table for examples
+model PortfolioContent {
+  content_id  Int      @id @default(autoincrement())
+  title       String   @db.VarChar(255)
+  description String?
+  content_type String  @db.VarChar(50)
+  file_url    String?  @db.VarChar(500)
+  is_featured Boolean  @default(false)
+  created_at  DateTime @default(now())
+
+  @@map("portfolio_content")
+}
+
+// Analytics table for tracking
+model Analytics {
+  analytics_id Int      @id @default(autoincrement())
+  user_id     Int
+  event_type  String   @db.VarChar(100)
+  event_data  Json?
+  created_at  DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@map("analytics")
+}

@@ -6,4 +6,10 @@ module.exports = {
     '**/__tests__/**/*.(test|spec).[jt]s?(x)',
     '!**/__tests__/config/**/*'
   ],
+  transformIgnorePatterns: [
+    'node_modules/(?!(.prisma/client)/)'
+  ],
+  moduleNameMapper: {
+    '^@prisma/client$': '<rootDir>/node_modules/@prisma/client'
+  }
 };

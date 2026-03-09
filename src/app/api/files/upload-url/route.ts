@@ -1,0 +1,66 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { generateUploadUrl, validateFile } from '../../../../lib/aws/s3';
+
+// POST /api/files/upload-url - Generate presigned upload URL
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { fileName, file_size, mime_type } = body;
+
+    // Validate required fields
+    if (!fileName || !file_size || !mime_type) {
+      return NextResponse.json({
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'File name, size, and MIME type are required'
+        }
+      }, { status: 400 });
+    }
+
+    // Create a mock file object for validation
+    const mockFile = new File([''], fileName, { type: mime_type });
+    Object.defineProperty(mockFile, 'size', { value: file_size });
+
+    // Validate file
+    const validation = validateFile(mockFile);
+    if (!validation.valid) {
+      return NextResponse.json({
+        success: false,
+        error: {
+          code: 'FILE_VALIDATION_ERROR',
+          message: validation.error
+        }
+      }, { status: 400 });
+    }
+
+    // Generate unique file name
+    const timestamp = Date.now();
+    const uniqueFileName = `${timestamp}-${fileName}`;
+
+    // Generate presigned upload URL
+    const uploadUrl = await generateUploadUrl(uniqueFileName, mime_type);
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        upload_url: uploadUrl,
+        file_name: uniqueFileName,
+        file_key: `uploads/${uniqueFileName}`
+      },
+      meta: {
+        timestamp: new Date().toISOString(),
+        expires_in: 3600 // 1 hour
+      }
+    });
+  } catch (error) {
+    console.error('Error generating upload URL:', error);
+    return NextResponse.json({
+      success: false,
+      error: {
+        code: 'UPLOAD_URL_ERROR',
+        message: 'Failed to generate upload URL'
+      }
+    }, { status: 500 });
+  }
+}
