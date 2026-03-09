@@ -102,7 +102,7 @@ jobs:
       run: npx prisma generate
       
     - name: Deploy to Vercel
-      uses: vercel/action@v1
+      uses: amondnet/vercel-action@v25
       with:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
@@ -133,7 +133,7 @@ jobs:
       run: npx prisma generate
       
     - name: Deploy to Vercel
-      uses: vercel/action@v1
+      uses: amondnet/vercel-action@v25
       with:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
