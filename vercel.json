@@ -25,10 +25,6 @@
     {
       "path": "/api/analytics/cleanup",
       "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/health/check",
-      "schedule": "*/5 * * * *"
     }
   ]
 }
