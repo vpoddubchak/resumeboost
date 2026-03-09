@@ -4,6 +4,8 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({ 
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    service: 'ResumeBoost API'
+    service: 'ResumeBoost API',
+    environment: 'production',
+    version: '1.0.0'
   });
 }
