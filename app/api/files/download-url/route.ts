@@ -1,19 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-// Database connection singleton
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined };
-
-export const prisma = globalForPrisma.prisma ?? new PrismaClient();
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
-
-// Mock download URL generation
-function generateDownloadUrl(file_key: string) {
-  // In real implementation, this would generate AWS S3 presigned download URL
-  const downloadUrl = `https://resumeboost-uploads.s3.amazonaws.com/${file_key}`;
-  return downloadUrl;
-}
+import { generateDownloadPresignedUrl, URL_EXPIRATION } from '@/src/lib/s3';
 
 // POST /api/files/download-url - Generate presigned download URL
 export async function POST(request: NextRequest) {
@@ -32,8 +18,8 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Generate download URL
-    const downloadUrl = generateDownloadUrl(file_key);
+    // Generate presigned download URL
+    const downloadUrl = await generateDownloadPresignedUrl(file_key);
 
     return NextResponse.json({
       success: true,
@@ -43,7 +29,7 @@ export async function POST(request: NextRequest) {
       },
       meta: {
         timestamp: new Date().toISOString(),
-        expires_in: 3600 // 1 hour
+        expires_in: URL_EXPIRATION
       }
     });
   } catch (error) {
