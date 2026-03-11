@@ -9,129 +9,153 @@ import type { Adapter } from "next-auth/adapters";
 // Re-export the type augmentations
 import "./auth-types";
 
+// Validate required environment variables
+if (!process.env.NEXTAUTH_SECRET && process.env.NODE_ENV === "production") {
+  throw new Error("NEXTAUTH_SECRET environment variable is required in production");
+}
+
+// Dummy hash for constant-time comparison when user not found (timing attack prevention)
+const DUMMY_HASH = "$2a$12$dummyhashfortimingatttackpreventionxx";
+
 /**
  * Custom Prisma adapter that maps our user_id PK to NextAuth's expected id field.
  * Only implements methods needed for JWT strategy + OAuth account linking.
  */
+/** Helper to map Prisma user to NextAuth adapter user format */
+function mapUser(user: { user_id: number; email: string; email_verified: Date | null; first_name: string | null; last_name: string | null; image: string | null; role: string }) {
+  return {
+    id: String(user.user_id),
+    user_id: user.user_id,
+    email: user.email,
+    emailVerified: user.email_verified,
+    name: [user.first_name, user.last_name].filter(Boolean).join(" ") || null,
+    image: user.image,
+    role: user.role,
+  };
+}
+
 function CustomPrismaAdapter(): Adapter {
-  // Using type assertion since our adapter maps custom user_id PK to NextAuth's id
   return ({
     async createUser(data: Record<string, unknown>) {
-      const user = await prisma.user.create({
-        data: {
-          email: data.email as string,
-          first_name: typeof data.name === "string" ? data.name.split(" ")[0] : null,
-          last_name: typeof data.name === "string" ? data.name.split(" ").slice(1).join(" ") || null : null,
-          email_verified: data.emailVerified as Date | null ?? null,
-          image: (data.image as string) ?? null,
-          role: "job_seeker",
-        },
-      });
-      return {
-        id: String(user.user_id),
-        user_id: user.user_id,
-        email: user.email,
-        emailVerified: user.email_verified,
-        name: [user.first_name, user.last_name].filter(Boolean).join(" ") || null,
-        image: user.image,
-        role: user.role,
-      };
+      try {
+        const user = await prisma.user.create({
+          data: {
+            email: data.email as string,
+            first_name: typeof data.name === "string" ? data.name.split(" ")[0] : null,
+            last_name: typeof data.name === "string" ? data.name.split(" ").slice(1).join(" ") || null : null,
+            email_verified: data.emailVerified as Date | null ?? null,
+            image: (data.image as string) ?? null,
+            role: "job_seeker",
+          },
+        });
+        return mapUser(user);
+      } catch (error) {
+        console.error("Adapter createUser error:", error);
+        throw error;
+      }
     },
     async getUser(id: string) {
-      const user = await prisma.user.findUnique({ where: { user_id: Number(id) } });
-      if (!user) return null;
-      return {
-        id: String(user.user_id),
-        user_id: user.user_id,
-        email: user.email,
-        emailVerified: user.email_verified,
-        name: [user.first_name, user.last_name].filter(Boolean).join(" ") || null,
-        image: user.image,
-        role: user.role,
-      };
+      try {
+        const user = await prisma.user.findUnique({ where: { user_id: Number(id) } });
+        if (!user) return null;
+        return mapUser(user);
+      } catch (error) {
+        console.error("Adapter getUser error:", error);
+        return null;
+      }
     },
     async getUserByEmail(email: string) {
-      const user = await prisma.user.findUnique({ where: { email } });
-      if (!user) return null;
-      return {
-        id: String(user.user_id),
-        user_id: user.user_id,
-        email: user.email,
-        emailVerified: user.email_verified,
-        name: [user.first_name, user.last_name].filter(Boolean).join(" ") || null,
-        image: user.image,
-        role: user.role,
-      };
+      try {
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) return null;
+        return mapUser(user);
+      } catch (error) {
+        console.error("Adapter getUserByEmail error:", error);
+        return null;
+      }
     },
     async getUserByAccount({ providerAccountId, provider }: { providerAccountId: string; provider: string }) {
-      const account = await prisma.account.findUnique({
-        where: { provider_provider_account_id: { provider, provider_account_id: providerAccountId } },
-        include: { user: true },
-      });
-      if (!account?.user) return null;
-      const user = account.user;
-      return {
-        id: String(user.user_id),
-        user_id: user.user_id,
-        email: user.email,
-        emailVerified: user.email_verified,
-        name: [user.first_name, user.last_name].filter(Boolean).join(" ") || null,
-        image: user.image,
-        role: user.role,
-      };
+      try {
+        const account = await prisma.account.findUnique({
+          where: { provider_provider_account_id: { provider, provider_account_id: providerAccountId } },
+          include: { user: true },
+        });
+        if (!account?.user) return null;
+        return mapUser(account.user);
+      } catch (error) {
+        console.error("Adapter getUserByAccount error:", error);
+        return null;
+      }
     },
     async updateUser({ id, ...data }: Record<string, unknown> & { id: string }) {
-      const updateData: Record<string, unknown> = {};
-      if (data.email !== undefined) updateData.email = data.email;
-      if (data.emailVerified !== undefined) updateData.email_verified = data.emailVerified;
-      if (data.image !== undefined) updateData.image = data.image;
-      if (data.name !== undefined) {
-        const name = data.name as string;
-        updateData.first_name = name?.split(" ")[0] ?? null;
-        updateData.last_name = name?.split(" ").slice(1).join(" ") || null;
+      try {
+        const updateData: Record<string, unknown> = {};
+        if (data.email !== undefined) updateData.email = data.email;
+        if (data.emailVerified !== undefined) updateData.email_verified = data.emailVerified;
+        if (data.image !== undefined) updateData.image = data.image;
+        if (data.name !== undefined) {
+          const name = data.name as string;
+          updateData.first_name = name?.split(" ")[0] ?? null;
+          updateData.last_name = name?.split(" ").slice(1).join(" ") || null;
+        }
+        const user = await prisma.user.update({
+          where: { user_id: Number(id) },
+          data: updateData,
+        });
+        return mapUser(user);
+      } catch (error) {
+        console.error("Adapter updateUser error:", error);
+        throw error;
       }
-      const user = await prisma.user.update({
-        where: { user_id: Number(id) },
-        data: updateData,
-      });
-      return {
-        id: String(user.user_id),
-        user_id: user.user_id,
-        email: user.email,
-        emailVerified: user.email_verified,
-        name: [user.first_name, user.last_name].filter(Boolean).join(" ") || null,
-        image: user.image,
-        role: user.role,
-      };
     },
     async deleteUser(id: string) {
-      await prisma.user.delete({ where: { user_id: Number(id) } });
+      try {
+        await prisma.user.delete({ where: { user_id: Number(id) } });
+      } catch (error) {
+        console.error("Adapter deleteUser error:", error);
+        throw error;
+      }
     },
     async linkAccount(data: Record<string, unknown>) {
-      await prisma.account.create({
-        data: {
-          user_id: Number(data.userId),
-          type: data.type as string,
-          provider: data.provider as string,
-          provider_account_id: data.providerAccountId as string,
-          refresh_token: (data.refresh_token as string) ?? null,
-          access_token: (data.access_token as string) ?? null,
-          expires_at: (data.expires_at as number) ?? null,
-          token_type: (data.token_type as string) ?? null,
-          scope: (data.scope as string) ?? null,
-          id_token: (data.id_token as string) ?? null,
-          session_state: data.session_state ? String(data.session_state) : null,
-        },
-      });
+      try {
+        await prisma.account.create({
+          data: {
+            user_id: Number(data.userId),
+            type: data.type as string,
+            provider: data.provider as string,
+            provider_account_id: data.providerAccountId as string,
+            refresh_token: (data.refresh_token as string) ?? null,
+            access_token: (data.access_token as string) ?? null,
+            expires_at: (data.expires_at as number) ?? null,
+            token_type: (data.token_type as string) ?? null,
+            scope: (data.scope as string) ?? null,
+            id_token: (data.id_token as string) ?? null,
+            session_state: data.session_state ? String(data.session_state) : null,
+          },
+        });
+      } catch (error) {
+        console.error("Adapter linkAccount error:", error);
+        throw error;
+      }
     },
     async unlinkAccount({ providerAccountId, provider }: { providerAccountId: string; provider: string }) {
-      await prisma.account.delete({
-        where: { provider_provider_account_id: { provider, provider_account_id: providerAccountId } },
-      });
+      try {
+        await prisma.account.delete({
+          where: { provider_provider_account_id: { provider, provider_account_id: providerAccountId } },
+        });
+      } catch (error) {
+        console.error("Adapter unlinkAccount error:", error);
+        throw error;
+      }
     },
     async createVerificationToken(data: { identifier: string; token: string; expires: Date }) {
-      const vt = await prisma.verificationToken.create({ data });
-      return vt;
+      try {
+        const vt = await prisma.verificationToken.create({ data });
+        return vt;
+      } catch (error) {
+        console.error("Adapter createVerificationToken error:", error);
+        throw error;
+      }
     },
     async useVerificationToken({ identifier, token }: { identifier: string; token: string }) {
       try {
@@ -166,13 +190,11 @@ const providers = [
         where: { email },
       });
 
-      if (!user || !user.password_hash) {
-        return null;
-      }
+      // Constant-time comparison: always run bcrypt.compare to prevent timing attacks
+      const hashToCompare = user?.password_hash || DUMMY_HASH;
+      const isPasswordValid = await bcrypt.compare(password, hashToCompare);
 
-      const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-
-      if (!isPasswordValid) {
+      if (!user || !user.password_hash || !isPasswordValid) {
         return null;
       }
 
@@ -199,7 +221,11 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: CustomPrismaAdapter(),
-  session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 }, // 30 days
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // Refresh token every 24 hours
+  },
   pages: {
     signIn: "/login",
     error: "/login",
