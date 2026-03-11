@@ -42,7 +42,7 @@ export interface RateLimitResult {
 
 /** Preset rate limit configurations */
 export const RATE_LIMITS = {
-  AUTH_REGISTER: { maxRequests: 3, windowSeconds: 15 * 60 } as RateLimitConfig,
+  AUTH_REGISTER: { maxRequests: 10, windowSeconds: 15 * 60 } as RateLimitConfig,
   AUTH_LOGIN: { maxRequests: 5, windowSeconds: 15 * 60 } as RateLimitConfig,
   GENERAL_API: { maxRequests: 100, windowSeconds: 60 } as RateLimitConfig,
   AI_ANALYSIS: { maxRequests: 10, windowSeconds: 60 * 60 } as RateLimitConfig,
