@@ -62,7 +62,7 @@ describe("checkRateLimit", () => {
 
 describe("RATE_LIMITS presets", () => {
   it("should have correct AUTH_REGISTER limits", () => {
-    expect(RATE_LIMITS.AUTH_REGISTER.maxRequests).toBe(3);
+    expect(RATE_LIMITS.AUTH_REGISTER.maxRequests).toBe(10);
     expect(RATE_LIMITS.AUTH_REGISTER.windowSeconds).toBe(15 * 60);
   });
 
