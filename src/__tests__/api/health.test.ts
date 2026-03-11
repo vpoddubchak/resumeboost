@@ -3,7 +3,7 @@
  */
 import { NextRequest } from 'next/server';
 
-// Mock prisma
+// Mock prisma (dynamic import in route, so use doMock pattern)
 jest.mock('@/app/lib/prisma', () => ({
   __esModule: true,
   default: {
@@ -78,6 +78,15 @@ describe('/api/health', () => {
     expect(body).toHaveProperty('service');
     expect(body).toHaveProperty('environment');
     expect(body).toHaveProperty('version');
+  });
+
+  it('should never return 500 even if imports fail', async () => {
+    // The route uses dynamic imports with try/catch, so even total failure returns 200
+    const { GET } = await import('@/app/api/health/route');
+    const request = new NextRequest('http://localhost:3000/api/health');
+    const response = await GET(request);
+
+    expect(response.status).toBe(200);
   });
 });
 

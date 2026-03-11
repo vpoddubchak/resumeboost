@@ -55,13 +55,16 @@ export function validateEnvironment(): ValidationResult {
 }
 
 export function validateStartup(): void {
+  // Skip during build phase — env vars are not available at build time on Vercel
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return;
+  }
+
   const result = validateEnvironment();
   if (!result.valid) {
     const msg = `Missing required environment variables: ${result.missing.join(', ')}`;
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error(msg);
-    }
-    logger.warn(`[DEV MODE] ${msg} — continuing anyway`);
+    // Log error but don't crash — allows degraded startup
+    logger.error(`Startup validation: ${msg}`);
   }
 }
 
