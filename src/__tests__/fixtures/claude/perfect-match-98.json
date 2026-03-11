@@ -1,0 +1,26 @@
+{
+  "matchScore": 98,
+  "strengths": [
+    "10+ years experience significantly exceeds 5+ requirement",
+    "Expert-level React and Node.js with proven track record",
+    "Deep AWS expertise with multiple certifications and production deployments",
+    "Extensive microservices architecture experience at scale (5M+ users)",
+    "Strong leadership demonstrated through team mentoring and technical guidance",
+    "Advanced TypeScript skills evident across all recent projects",
+    "Active open source contributor with significant community impact",
+    "Real-time systems experience with WebSocket implementations",
+    "Kubernetes expertise validated by CKA certification and production use",
+    "Proven DevOps skills with CI/CD pipeline optimization",
+    "Strong collaboration skills with cross-functional teams"
+  ],
+  "weaknesses": [
+    "May be overqualified for the position",
+    "Salary expectations might exceed budget range"
+  ],
+  "recommendations": [
+    "Highlight specific achievements that align with company's product vision",
+    "Prepare to discuss salary expectations and growth opportunities",
+    "Emphasize interest in the specific challenges this role presents",
+    "Be ready to explain why you're interested in this level position"
+  ]
+}

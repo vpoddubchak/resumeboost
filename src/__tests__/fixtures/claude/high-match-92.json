@@ -1,0 +1,26 @@
+{
+  "matchScore": 92,
+  "strengths": [
+    "Exceeds experience requirement with 8+ years vs. 5+ required",
+    "Strong proficiency in both React and Node.js with extensive project history",
+    "Demonstrated AWS expertise with Solutions Architect certification",
+    "Proven leadership experience mentoring junior developers",
+    "Microservices architecture experience directly matches job requirements",
+    "CI/CD pipeline implementation aligns with DevOps practices requirement",
+    "TypeScript experience evident through project work",
+    "Open source contributions demonstrate community engagement"
+  ],
+  "weaknesses": [
+    "No specific mention of real-time systems (WebSockets/SSE) in resume",
+    "Limited detail on Kubernetes experience despite CKA certification",
+    "Could emphasize more quantitative metrics for scalability achievements",
+    "Missing specific examples of collaboration with product teams"
+  ],
+  "recommendations": [
+    "Add a dedicated section highlighting real-time system projects or experience",
+    "Expand on Kubernetes usage in production environments",
+    "Include specific metrics: e.g., 'Reduced deployment time by 87.5% (2h → 15min)'",
+    "Mention cross-functional collaboration examples with product/design teams",
+    "Consider adding links to notable open source contributions"
+  ]
+}

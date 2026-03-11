@@ -1,0 +1,30 @@
+{
+  "matchScore": 12,
+  "strengths": [
+    "Recent computer science degree shows foundational knowledge",
+    "Academic projects demonstrate basic programming skills",
+    "Enthusiasm for learning evident from coursework"
+  ],
+  "weaknesses": [
+    "Zero professional experience vs. 5+ years required",
+    "No React or Node.js experience",
+    "No cloud platform exposure",
+    "Missing all technical requirements (microservices, CI/CD, databases)",
+    "No real-world project experience",
+    "Academic projects don't translate to production systems",
+    "Lacks understanding of enterprise software development",
+    "No team collaboration experience",
+    "Missing soft skills required for senior role"
+  ],
+  "recommendations": [
+    "Apply for junior or entry-level positions instead",
+    "Complete internship to gain professional experience",
+    "Build personal projects using React and Node.js",
+    "Take online courses on AWS, Docker, and Kubernetes",
+    "Contribute to open source projects to gain real-world experience",
+    "Focus on building a strong portfolio before applying to senior roles",
+    "Consider bootcamp or intensive training program",
+    "Network with professionals in the field for mentorship",
+    "Gain 3-5 years of experience before reapplying to senior positions"
+  ]
+}

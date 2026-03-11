@@ -1,0 +1,29 @@
+{
+  "matchScore": 68,
+  "strengths": [
+    "Meets minimum 5+ years experience requirement",
+    "Solid React and Node.js foundation",
+    "Some cloud platform exposure (AWS mentioned)",
+    "Demonstrates continuous learning through certifications",
+    "Experience with modern development practices (CI/CD, testing)"
+  ],
+  "weaknesses": [
+    "Limited microservices architecture experience compared to job requirements",
+    "AWS experience appears surface-level, not deep expertise",
+    "No TypeScript explicitly mentioned in skills or projects",
+    "Missing real-time systems experience entirely",
+    "Lack of leadership/mentoring examples",
+    "Open source contributions not highlighted",
+    "Scalability claims lack supporting metrics"
+  ],
+  "recommendations": [
+    "Gain hands-on TypeScript experience and add to resume prominently",
+    "Pursue deeper AWS certifications or projects to demonstrate expertise",
+    "Seek opportunities to work on microservices architecture",
+    "Add any WebSocket or real-time feature implementations",
+    "Highlight any mentoring or code review activities",
+    "Contribute to open source projects relevant to the tech stack",
+    "Quantify all achievements with specific metrics (users, performance, etc.)",
+    "Consider taking on a side project involving real-time features"
+  ]
+}

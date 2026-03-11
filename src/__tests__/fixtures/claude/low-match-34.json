@@ -1,0 +1,33 @@
+{
+  "matchScore": 34,
+  "strengths": [
+    "Has some JavaScript development experience",
+    "Familiar with web development fundamentals",
+    "Shows willingness to learn through education section"
+  ],
+  "weaknesses": [
+    "Only 2 years experience vs. 5+ required - significant gap",
+    "No React experience mentioned",
+    "No Node.js backend experience",
+    "Missing cloud platform knowledge (AWS/Azure/GCP)",
+    "No microservices or distributed systems experience",
+    "Lacks CI/CD pipeline experience",
+    "No TypeScript skills evident",
+    "Missing database experience (SQL/NoSQL)",
+    "No leadership or mentoring experience",
+    "Technology stack primarily jQuery/PHP - outdated for this role"
+  ],
+  "recommendations": [
+    "Gain 2-3 more years of experience before applying to senior roles",
+    "Learn React through online courses and build portfolio projects",
+    "Study Node.js and build full-stack applications",
+    "Complete AWS certifications (Cloud Practitioner → Solutions Architect)",
+    "Take online courses on microservices architecture patterns",
+    "Set up personal CI/CD pipelines using GitHub Actions",
+    "Migrate existing projects from JavaScript to TypeScript",
+    "Build projects using PostgreSQL and MongoDB",
+    "Seek mentorship opportunities or junior developer guidance roles",
+    "Consider mid-level positions to bridge the experience gap",
+    "Focus on modern JavaScript frameworks and abandon legacy tech"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "matchScore": 45,
+  "strengths": [
+    "Strong problem-solving skills transferable from previous career",
+    "Completed coding bootcamp with React and Node.js focus",
+    "Built several portfolio projects demonstrating practical skills",
+    "Self-motivated learner with clear career transition plan",
+    "Soft skills from previous career (communication, teamwork) are valuable"
+  ],
+  "weaknesses": [
+    "Only 1 year of software development experience vs. 5+ required",
+    "No professional production environment experience",
+    "Limited exposure to enterprise-scale systems",
+    "Missing cloud platform certifications or deep knowledge",
+    "No microservices architecture experience",
+    "Lacks CI/CD pipeline implementation experience",
+    "Portfolio projects are small-scale vs. production requirements",
+    "No leadership or mentoring experience in tech",
+    "Technology depth is limited compared to senior-level expectations"
+  ],
+  "recommendations": [
+    "Target mid-level or junior positions to gain experience",
+    "Seek contract or freelance work to build professional portfolio",
+    "Contribute to open source projects to demonstrate skills",
+    "Pursue AWS certifications to strengthen cloud knowledge",
+    "Join a startup or smaller company where you can wear multiple hats",
+    "Find a mentor in the industry for guidance",
+    "Build more complex projects that demonstrate scalability",
+    "Consider taking a step back in seniority to enter the field",
+    "Highlight transferable skills from previous career more prominently",
+    "Network actively to find opportunities that value career changers"
+  ]
+}

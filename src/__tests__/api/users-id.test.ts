@@ -17,8 +17,7 @@ jest.mock('@prisma/client', () => ({
 }));
 
 function buildRequest(method: string, id: string, body?: Record<string, unknown>): NextRequest {
-  const init: RequestInit = { method, headers: { 'Content-Type': 'application/json' } };
-  if (body) init.body = JSON.stringify(body);
+  const init = { method, headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined };
   return new NextRequest(`http://localhost:3000/api/users/${id}`, init);
 }
 
