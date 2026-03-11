@@ -63,6 +63,22 @@ export const userUpdateSchema = z.object({
   email: z.string().email().max(255).optional(),
 });
 
+export const ALLOWED_MIME_TYPES = [
+  'application/pdf',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'text/plain',
+] as const;
+
+export const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
+
+export const fileUploadSchema = z.object({
+  fileName: z.string().min(1).max(255),
+  fileType: z.enum(ALLOWED_MIME_TYPES),
+  fileSize: z.number().max(MAX_FILE_SIZE),
+});
+
+export const jobDescriptionSchema = z.string().min(10).max(10000);
+
 /**
  * Validate request body against a Zod schema.
  * Returns { success: true, data } or { success: false, error }.
