@@ -9,9 +9,11 @@ import type { Adapter } from "next-auth/adapters";
 // Re-export the type augmentations
 import "./auth-types";
 
-// Validate required environment variables
-if (!process.env.NEXTAUTH_SECRET && process.env.NODE_ENV === "production") {
-  throw new Error("NEXTAUTH_SECRET environment variable is required in production");
+// Validate required environment variables (checked lazily to avoid build-time errors)
+function validateEnv() {
+  if (!process.env.NEXTAUTH_SECRET && process.env.NODE_ENV === "production") {
+    throw new Error("NEXTAUTH_SECRET environment variable is required in production");
+  }
 }
 
 // Dummy hash for constant-time comparison when user not found (timing attack prevention)
@@ -179,6 +181,8 @@ const providers = [
       password: { label: "Password", type: "password" },
     },
     authorize: async (credentials) => {
+      validateEnv();
+
       if (!credentials?.email || !credentials?.password) {
         return null;
       }
