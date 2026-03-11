@@ -1,6 +1,6 @@
 'use client';
 
-import { useUIStore, selectCurrentStep } from '@/app/store/ui-store';
+import { useUIStore } from '@/app/store/ui-store';
 import type { StepKey, StepNumber } from '@/app/store/types';
 
 const STEPS: { key: StepKey; label: string; number: StepNumber }[] = [
@@ -23,7 +23,6 @@ function CheckIcon() {
 }
 
 export function StepNavigation() {
-  const currentStep = useUIStore(selectCurrentStep);
   const steps = useUIStore((state) => state.steps);
   const setCurrentStep = useUIStore((state) => state.setCurrentStep);
 

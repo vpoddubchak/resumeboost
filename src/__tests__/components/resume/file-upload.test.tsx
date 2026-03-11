@@ -14,13 +14,6 @@ jest.mock('@/app/lib/api-client', () => ({
   },
 }));
 
-jest.mock('@/app/lib/retry', () => ({
-  withRetry: jest.fn().mockImplementation((fn) => fn()),
-  RETRY_POLICIES: {
-    s3Upload: { maxRetries: 2, baseDelayMs: 500, maxDelayMs: 2000, backoffMultiplier: 2, jitter: true },
-  },
-}));
-
 const mockXHRInstance = {
   open: jest.fn(),
   setRequestHeader: jest.fn(),

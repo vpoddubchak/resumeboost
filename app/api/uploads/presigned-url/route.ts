@@ -1,8 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { auth } from '@/app/lib/auth';
 import { generateUploadPresignedUrl, generateFileKey, URL_EXPIRATION } from '@/src/lib/s3';
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from '@/app/lib/validations';
 import { checkRateLimit, getClientIp, rateLimitResponse, RATE_LIMITS } from '@/app/lib/rate-limit';
+
+const presignedUrlRequestSchema = z.object({
+  fileName: z.string().min(1, 'File name is required').max(255),
+  fileSize: z.number().positive().max(MAX_FILE_SIZE, 'File too large. Maximum size: 15MB'),
+  mimeType: z
+    .string()
+    .refine(
+      (val): val is (typeof ALLOWED_MIME_TYPES)[number] =>
+        (ALLOWED_MIME_TYPES as readonly string[]).includes(val),
+      'Invalid file type. Allowed: PDF, DOCX, TXT'
+    ),
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,37 +34,23 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { fileName, fileSize, mimeType } = body;
+    const parsed = presignedUrlRequestSchema.safeParse(body);
 
-    if (!fileName || !fileSize || !mimeType) {
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0];
       return NextResponse.json(
         {
           success: false,
-          error: { code: 'VALIDATION_ERROR', message: 'fileName, fileSize, and mimeType are required' },
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: firstIssue?.message ?? 'Invalid request body',
+          },
         },
         { status: 400 }
       );
     }
 
-    if (!ALLOWED_MIME_TYPES.includes(mimeType)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: { code: 'VALIDATION_ERROR', message: 'Invalid file type. Allowed: PDF, DOCX, TXT' },
-        },
-        { status: 400 }
-      );
-    }
-
-    if (fileSize > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: { code: 'VALIDATION_ERROR', message: 'File too large. Maximum size: 15MB' },
-        },
-        { status: 400 }
-      );
-    }
+    const { fileName, fileSize, mimeType } = parsed.data;
 
     const fileKey = generateFileKey(String(session.user.userId), fileName);
     const uploadUrl = await generateUploadPresignedUrl(fileKey, mimeType);

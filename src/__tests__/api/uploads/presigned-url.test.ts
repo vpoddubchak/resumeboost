@@ -113,7 +113,7 @@ describe('/api/uploads/presigned-url', () => {
 
     expect(response.status).toBe(400);
     expect(data.success).toBe(false);
-    expect(data.error.message).toContain('Invalid file type');
+    expect(data.error.message).toContain('Invalid file type. Allowed: PDF, DOCX, TXT');
   });
 
   it('should return 400 for file exceeding 15MB', async () => {

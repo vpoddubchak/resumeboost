@@ -9,7 +9,6 @@ export function JobDescriptionInput() {
   const charCount = jobDescription.length;
   const MAX_CHARS = 10000;
   const MIN_CHARS = 10;
-  const isValid = charCount >= MIN_CHARS && charCount <= MAX_CHARS;
 
   return (
     <div className="space-y-2">
