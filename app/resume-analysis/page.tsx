@@ -1,12 +1,13 @@
 'use client';
 
 import { useUIStore, selectCurrentStep } from '@/app/store/ui-store';
-import { useResumeStore, selectUploadStatus, selectJobDescription } from '@/app/store/resume-store';
+import { useResumeStore, selectUploadStatus, selectJobDescription, selectAnalysisResult } from '@/app/store/resume-store';
 import { StepNavigation } from '@/app/components/resume/step-navigation';
 import { FileUpload } from '@/app/components/resume/file-upload';
 import { JobDescriptionInput } from '@/app/components/resume/job-description-input';
 import { UploadProgress } from '@/app/components/resume/upload-progress';
 import { AnalysisProgress } from '@/app/components/resume/analysis-progress';
+import { AnalysisResults } from '@/app/components/resume/analysis-results';
 import type { AnalysisResponseData } from '@/app/components/resume/analysis-progress';
 import type { AnalysisResult } from '@/app/store/types';
 
@@ -117,10 +118,55 @@ function AnalysisStep() {
 }
 
 function ReviewStep() {
+  const analysis = useResumeStore(selectAnalysisResult);
+  const goToNextStep = useUIStore((state) => state.goToNextStep);
+  const setCurrentStep = useUIStore((state) => state.setCurrentStep);
+
+  if (!analysis) {
+    return (
+      <div className="w-full max-w-2xl mx-auto text-center space-y-4" role="alert">
+        <h1 className="text-2xl font-bold text-white">Missing Analysis</h1>
+        <p className="text-base text-gray-400">Please upload your resume and run the analysis first.</p>
+        <button
+          onClick={() => setCurrentStep(1)}
+          className="mx-auto min-h-[48px] px-8 py-3 rounded-xl font-semibold text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 focus-visible:outline-none"
+        >
+          Go Back to Upload
+        </button>
+      </div>
+    );
+  }
+
+  const matchScore = analysis.score ?? 0;
+  const { strengths = [], weaknesses = [], recommendations = [] } = (analysis.analysisData ?? {}) as {
+    strengths?: string[];
+    weaknesses?: string[];
+    recommendations?: string[];
+  };
+
   return (
-    <div className="w-full max-w-2xl mx-auto text-center space-y-4">
-      <h1 className="text-2xl font-bold text-white">Review Results</h1>
-      <p className="text-base text-gray-400">Results display — coming in Story 1.3</p>
+    <div className="w-full space-y-6">
+      <AnalysisResults
+        matchScore={matchScore}
+        strengths={strengths}
+        weaknesses={weaknesses}
+        recommendations={recommendations}
+      />
+
+      <div className="w-full max-w-2xl mx-auto space-y-3">
+        <button
+          onClick={() => goToNextStep()}
+          className="w-full min-h-[48px] py-3 px-6 rounded-xl font-semibold text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-blue-500/25 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 focus-visible:outline-none"
+        >
+          Book a Consultation
+        </button>
+        <button
+          onClick={() => setCurrentStep(2)}
+          className="w-full min-h-[48px] py-3 px-6 rounded-xl font-semibold text-base bg-gray-800 hover:bg-gray-700 text-gray-300 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 focus-visible:outline-none"
+        >
+          Back to Analysis
+        </button>
+      </div>
     </div>
   );
 }
