@@ -62,7 +62,9 @@ export async function analyzeResume(
         logger.debug('Claude raw response', { rawText: text });
         let parsed: unknown;
         try {
-          parsed = JSON.parse(text);
+          // Claude sometimes wraps JSON in ```json``` blocks
+          const cleanText = text.replace(/^```json\s*\n?|\n?```$/g, '').trim();
+          parsed = JSON.parse(cleanText);
         } catch {
           logger.error('Claude JSON parse failed', { rawText: text });
           throw new ClaudeParseError('Claude returned unparseable JSON');
