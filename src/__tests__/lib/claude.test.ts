@@ -81,33 +81,27 @@ describe('app/lib/claude - analyzeResume', () => {
     );
   });
 
-  it('should throw on timeout (AbortController abort)', async () => {
-    mockCreate.mockImplementation((_params: unknown, options: { signal: AbortSignal }) => {
-      return new Promise((_resolve, reject) => {
-        if (options?.signal) {
-          options.signal.addEventListener('abort', () => {
-            reject(new Error('The operation was aborted'));
-          });
-        }
-        // Simulate long wait — the abort will fire first
-      });
-    });
+  it('should abort after ANALYSIS_TIMEOUT_MS via AbortController', async () => {
+    jest.useFakeTimers();
 
-    // Override withRetry to call fn directly but with a very short timeout
-    (withRetry as jest.Mock).mockImplementation(async (fn: () => Promise<unknown>) => {
-      // We need to test that the abort happens — but the real timeout is 35s
-      // Instead, test that AbortController is used by checking the signal is passed
-      return fn();
-    });
+    mockCreate.mockImplementation((_params: unknown, options: { signal: AbortSignal }) =>
+      new Promise((_, reject) => {
+        options.signal.addEventListener('abort', () =>
+          reject(new Error('The operation was aborted'))
+        );
+      })
+    );
 
-    const { analyzeResume } = await import('@/app/lib/claude');
+    (withRetry as jest.Mock).mockImplementation(async (fn: () => Promise<unknown>) => fn());
 
-    // The call will hang because mockCreate never resolves
-    // We verify abort signal is passed in the 'should call Claude API' test above
-    // Here we verify that a rejected abort throws
-    mockCreate.mockRejectedValueOnce(new Error('The operation was aborted'));
+    const { analyzeResume, ANALYSIS_TIMEOUT_MS } = await import('@/app/lib/claude');
+    const promise = analyzeResume('resume text', 'job description');
 
-    await expect(analyzeResume('resume', 'job')).rejects.toThrow('The operation was aborted');
+    jest.advanceTimersByTime(ANALYSIS_TIMEOUT_MS + 1);
+
+    await expect(promise).rejects.toThrow('The operation was aborted');
+
+    jest.useRealTimers();
   });
 
   it('should throw ZodError on malformed JSON response', async () => {

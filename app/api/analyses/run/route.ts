@@ -5,6 +5,7 @@ import { analyzeRequestSchema, validateBody } from '@/app/lib/validations';
 import { downloadFileContent } from '@/src/lib/s3';
 import { extractTextFromFile, UnsupportedFileTypeError } from '@/app/lib/file-extractor';
 import { analyzeResume } from '@/app/lib/claude';
+import type { ClaudeAnalysisResult } from '@/app/lib/claude';
 import { logger } from '@/app/lib/logger';
 import type { LogContext } from '@/app/lib/logger';
 
@@ -53,6 +54,7 @@ export async function POST(request: Request) {
       where: {
         upload_id,
         user_id: userId,
+        upload_status: 'uploaded',
       },
     });
 
@@ -105,12 +107,12 @@ export async function POST(request: Request) {
     }
 
     // 7. Call Claude API for analysis
-    let analysisResult;
+    let analysisResult: ClaudeAnalysisResult;
     try {
       analysisResult = await analyzeResume(resumeText, job_description);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      const isTimeout = message.includes('abort') || message.includes('timeout');
+      const isTimeout = error instanceof Error && (error.name === 'AbortError' || message.toLowerCase().includes('abort') || message.toLowerCase().includes('timeout'));
       const isCircuitOpen = message.includes('Circuit breaker is open');
 
       logger.error('Claude analysis failed', {

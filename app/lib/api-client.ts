@@ -30,6 +30,7 @@ interface ApiClientConfig {
   circuitBreakerKey?: string;
   headers?: Record<string, string>;
   onLoadingChange?: (isLoading: boolean) => void;
+  signal?: AbortSignal;
 }
 
 const DEFAULT_CONFIG: Required<Pick<ApiClientConfig, 'baseUrl' | 'retryConfig'>> = {
@@ -46,7 +47,7 @@ async function makeRequest<T>(
   options: RequestInit,
   config: ApiClientConfig = {}
 ): Promise<ApiResponse<T>> {
-  const { retryConfig = DEFAULT_CONFIG.retryConfig, circuitBreakerKey, headers: extraHeaders } = config;
+  const { retryConfig = DEFAULT_CONFIG.retryConfig, circuitBreakerKey, headers: extraHeaders, signal } = config;
 
   const mergedOptions: RequestInit = {
     ...options,
@@ -54,6 +55,15 @@ async function makeRequest<T>(
       'Content-Type': 'application/json',
       ...options.headers,
       ...extraHeaders,
+    },
+    ...(signal ? { signal } : {}),
+  };
+
+  const abortAwareRetryConfig: RetryConfig = {
+    ...retryConfig,
+    shouldRetry: (error: Error) => {
+      if (signal?.aborted || error.name === 'AbortError') return false;
+      return retryConfig.shouldRetry?.(error) ?? true;
     },
   };
 
@@ -87,7 +97,7 @@ async function makeRequest<T>(
 
         return response.json() as Promise<ApiResponse<T>>;
       },
-      retryConfig,
+      abortAwareRetryConfig,
       circuitBreakerKey
     );
   } finally {

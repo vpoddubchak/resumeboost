@@ -5,7 +5,7 @@ import { LoadingSpinner } from '@/app/components/ui/loading-spinner';
 import { useUIStore } from '@/app/store/ui-store';
 import { apiClient } from '@/app/lib/api-client';
 
-interface AnalysisResponseData {
+export interface AnalysisResponseData {
   analysisId: number;
   score: number;
   analysisData: Record<string, unknown>;
@@ -48,6 +48,14 @@ export function AnalysisProgress({
   const setLoading = useUIStore((state) => state.setLoading);
   const abortControllerRef = useRef<AbortController | null>(null);
   const progressTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const clearProgressTimers = useCallback(() => {
     for (const timer of progressTimersRef.current) {
@@ -96,10 +104,12 @@ export function AnalysisProgress({
     try {
       const response = await apiClient.post<AnalysisResponseData>(
         '/api/analyses/run',
-        { upload_id: uploadId, job_description: jobDescription }
+        { upload_id: uploadId, job_description: jobDescription },
+        { signal: abortControllerRef.current.signal }
       );
 
       clearProgressTimers();
+      if (!isMountedRef.current) return;
 
       if (response.success) {
         setProgress(100);
@@ -113,6 +123,7 @@ export function AnalysisProgress({
       }
     } catch (err) {
       clearProgressTimers();
+      if (!isMountedRef.current) return;
       setLoading('analysis', false);
       const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.';
       setError(errorMessage);
@@ -134,14 +145,16 @@ export function AnalysisProgress({
     setIsRetrying(true);
     setError(null);
     setProgress(0);
-    triggerAnalysis().finally(() => setIsRetrying(false));
+    triggerAnalysis().finally(() => {
+      if (isMountedRef.current) setIsRetrying(false);
+    });
   }, [triggerAnalysis]);
 
   const stageLabel = getStageLabel(progress);
 
   if (error) {
     return (
-      <div className="w-full max-w-2xl mx-auto text-center space-y-6">
+      <div className="w-full max-w-2xl mx-auto text-center space-y-6" role="alert">
         <div className="flex justify-center">
           <svg className="w-16 h-16 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />

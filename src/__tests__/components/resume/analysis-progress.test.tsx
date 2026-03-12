@@ -71,7 +71,8 @@ describe('AnalysisProgress', () => {
 
     expect(apiClient.post).toHaveBeenCalledWith(
       '/api/analyses/run',
-      { upload_id: 1, job_description: 'Senior React developer with 5 years experience' }
+      { upload_id: 1, job_description: 'Senior React developer with 5 years experience' },
+      expect.objectContaining({ signal: expect.any(AbortSignal) })
     );
   });
 
@@ -164,13 +165,29 @@ describe('AnalysisProgress', () => {
     expect(mockOnError).toHaveBeenCalledWith('Network failure');
   });
 
-  it('should have accessible progress announcements with aria-live', async () => {
+  it('should have aria-live="polite" regions for stage label announcements', async () => {
     await act(async () => {
       render(<AnalysisProgress {...defaultProps} />);
     });
 
-    const liveRegions = screen.getAllByLabelText(/.*/);
-    expect(liveRegions.length).toBeGreaterThan(0);
+    const politeRegions = document.querySelectorAll('[aria-live="polite"]');
+    expect(politeRegions.length).toBeGreaterThan(0);
+  });
+
+  it('should have role="alert" on error state for screen reader announcement', async () => {
+    (apiClient.post as jest.Mock).mockResolvedValue({
+      success: false,
+      error: { code: 'ANALYSIS_ERROR', message: 'AI analysis failed' },
+    });
+
+    await act(async () => {
+      render(<AnalysisProgress {...defaultProps} />);
+    });
+
+    await waitFor(() => {
+      const alertRegion = document.querySelector('[role="alert"]');
+      expect(alertRegion).toBeInTheDocument();
+    });
   });
 
   it('should have touch-friendly Retry button (min-h-[48px])', async () => {

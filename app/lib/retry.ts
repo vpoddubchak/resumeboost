@@ -11,6 +11,7 @@ export interface RetryConfig {
   maxDelayMs: number;
   backoffMultiplier: number;
   jitter: boolean;
+  shouldRetry?: (error: Error) => boolean;
 }
 
 export const RETRY_POLICIES = {
@@ -155,6 +156,13 @@ export async function withRetry<T>(
       return result;
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
+
+      if (config.shouldRetry && !config.shouldRetry(lastError)) {
+        if (circuitBreakerKey) {
+          recordCircuitFailure(circuitBreakerKey);
+        }
+        throw lastError;
+      }
 
       if (attempt < config.maxRetries) {
         const delay = calculateDelay(attempt, config);

@@ -7,6 +7,7 @@ import { FileUpload } from '@/app/components/resume/file-upload';
 import { JobDescriptionInput } from '@/app/components/resume/job-description-input';
 import { UploadProgress } from '@/app/components/resume/upload-progress';
 import { AnalysisProgress } from '@/app/components/resume/analysis-progress';
+import type { AnalysisResponseData } from '@/app/components/resume/analysis-progress';
 import type { AnalysisResult } from '@/app/store/types';
 
 function UploadStep() {
@@ -88,7 +89,7 @@ function AnalysisStep() {
     );
   }
 
-  const handleComplete = (data: { analysisId: number; score: number; analysisData: Record<string, unknown>; recommendations: Record<string, unknown>; createdAt: string }) => {
+  const handleComplete = (data: AnalysisResponseData) => {
     const analysisResult: AnalysisResult = {
       analysisId: data.analysisId,
       score: data.score,

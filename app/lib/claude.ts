@@ -2,6 +2,13 @@ import Anthropic from '@anthropic-ai/sdk';
 import { withRetry, RETRY_POLICIES } from './retry';
 import { z } from 'zod';
 
+class ClaudeParseError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ClaudeParseError';
+  }
+}
+
 // NOTE: An identical interface exists in src/__tests__/fixtures/claude/index.ts
 // Source of truth is THIS file (app/lib/claude.ts). Tests should import from here.
 export interface ClaudeAnalysisResult {
@@ -30,12 +37,12 @@ export async function analyzeResume(
   resumeText: string,
   jobDescription: string
 ): Promise<ClaudeAnalysisResult> {
-  return withRetry(
-    async () => {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), ANALYSIS_TIMEOUT_MS);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), ANALYSIS_TIMEOUT_MS);
 
-      try {
+  try {
+    return await withRetry(
+      async () => {
         const message = await anthropic.messages.create(
           {
             model: MODEL,
@@ -51,15 +58,27 @@ export async function analyzeResume(
         );
 
         const text = message.content[0]?.type === 'text' ? message.content[0].text : '';
-        const parsed = JSON.parse(text);
+        let parsed: unknown;
+        try {
+          parsed = JSON.parse(text);
+        } catch {
+          throw new ClaudeParseError('Claude returned unparseable JSON');
+        }
         return claudeResponseSchema.parse(parsed); // Throws ZodError if malformed
-      } finally {
-        clearTimeout(timeout);
-      }
-    },
-    RETRY_POLICIES.claudeApi,
-    'claude-api'
-  );
+      },
+      {
+        ...RETRY_POLICIES.claudeApi,
+        shouldRetry: (error: Error) =>
+          !controller.signal.aborted &&
+          error.name !== 'AbortError' &&
+          !(error instanceof ClaudeParseError) &&
+          !(error instanceof z.ZodError),
+      },
+      'claude-api'
+    );
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 function buildPrompt(resumeText: string, jobDescription: string): string {
@@ -80,4 +99,4 @@ Return ONLY this JSON structure (no markdown, no explanation):
 }`;
 }
 
-export { anthropic, claudeResponseSchema, ANALYSIS_TIMEOUT_MS, MODEL };
+export { claudeResponseSchema, ANALYSIS_TIMEOUT_MS, MODEL };

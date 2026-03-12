@@ -217,6 +217,7 @@ describe('/api/analyses/run', () => {
       where: {
         upload_id: 1,
         user_id: 42,
+        upload_status: 'uploaded',
       },
     });
   });
@@ -244,6 +245,19 @@ describe('/api/analyses/run', () => {
 
     expect(response.status).toBe(422);
     expect(data.error.code).toBe('EXTRACTION_ERROR');
+  });
+
+  it('should return 500 when S3 download fails', async () => {
+    const s3 = require('@/src/lib/s3');
+    s3.downloadFileContent.mockRejectedValueOnce(new Error('S3 connection timeout'));
+
+    const { POST } = await import('@/app/api/analyses/run/route');
+    const response = await POST(buildRequest({ upload_id: 1, job_description: 'Senior developer role with React' }));
+    const data = await response.json();
+
+    expect(response.status).toBe(500);
+    expect(data.success).toBe(false);
+    expect(data.error.code).toBe('DOWNLOAD_ERROR');
   });
 
   it('should return 500 on Claude API failure after retries', async () => {
