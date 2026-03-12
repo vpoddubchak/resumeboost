@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { withRetry, RETRY_POLICIES } from './retry';
 import { z } from 'zod';
+import { logger } from './logger';
 
 class ClaudeParseError extends Error {
   constructor(message: string) {
@@ -58,10 +59,12 @@ export async function analyzeResume(
         );
 
         const text = message.content[0]?.type === 'text' ? message.content[0].text : '';
+        logger.debug('Claude raw response', { rawText: text });
         let parsed: unknown;
         try {
           parsed = JSON.parse(text);
         } catch {
+          logger.error('Claude JSON parse failed', { rawText: text });
           throw new ClaudeParseError('Claude returned unparseable JSON');
         }
         return claudeResponseSchema.parse(parsed); // Throws ZodError if malformed
