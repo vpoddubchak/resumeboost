@@ -63,6 +63,11 @@ export const userUpdateSchema = z.object({
   email: z.string().email().max(255).optional(),
 });
 
+export const analyzeRequestSchema = z.object({
+  upload_id: z.number().int().positive('Upload ID must be a positive integer'),
+  job_description: z.string().min(10, 'Job description too short').max(10000, 'Job description too long'),
+});
+
 export const ALLOWED_MIME_TYPES = [
   'application/pdf',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

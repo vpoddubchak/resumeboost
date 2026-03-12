@@ -6,6 +6,8 @@ import { StepNavigation } from '@/app/components/resume/step-navigation';
 import { FileUpload } from '@/app/components/resume/file-upload';
 import { JobDescriptionInput } from '@/app/components/resume/job-description-input';
 import { UploadProgress } from '@/app/components/resume/upload-progress';
+import { AnalysisProgress } from '@/app/components/resume/analysis-progress';
+import type { AnalysisResult } from '@/app/store/types';
 
 function UploadStep() {
   const uploadStatus = useResumeStore(selectUploadStatus);
@@ -65,11 +67,51 @@ function UploadStep() {
 }
 
 function AnalysisStep() {
+  const uploadId = useResumeStore((state) => state.upload.uploadId);
+  const jobDescription = useResumeStore(selectJobDescription);
+  const setAnalysisResult = useResumeStore((state) => state.setAnalysisResult);
+  const goToNextStep = useUIStore((state) => state.goToNextStep);
+
+  // Guard: if uploadId is null, show error
+  if (!uploadId) {
+    return (
+      <div className="w-full max-w-2xl mx-auto text-center space-y-4">
+        <h1 className="text-2xl font-bold text-white">Missing Upload</h1>
+        <p className="text-base text-gray-400">Please upload your resume first before running analysis.</p>
+        <button
+          onClick={() => useUIStore.getState().setCurrentStep(1)}
+          className="mx-auto min-h-[48px] px-8 py-3 rounded-xl font-semibold text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg transition-all duration-200"
+        >
+          Go Back to Upload
+        </button>
+      </div>
+    );
+  }
+
+  const handleComplete = (data: { analysisId: number; score: number; analysisData: Record<string, unknown>; recommendations: Record<string, unknown>; createdAt: string }) => {
+    const analysisResult: AnalysisResult = {
+      analysisId: data.analysisId,
+      score: data.score,
+      analysisData: data.analysisData,
+      recommendations: data.recommendations,
+      createdAt: data.createdAt,
+    };
+    setAnalysisResult(analysisResult);
+    goToNextStep();
+  };
+
+  const handleError = (_message: string) => {
+    // Error is displayed by AnalysisProgress component internally
+    // Parent only needs to know for logging/telemetry purposes
+  };
+
   return (
-    <div className="w-full max-w-2xl mx-auto text-center space-y-4">
-      <h1 className="text-2xl font-bold text-white">Analyzing Your Resume</h1>
-      <p className="text-base text-gray-400">AI analysis in progress — coming in Story 1.2</p>
-    </div>
+    <AnalysisProgress
+      onComplete={handleComplete}
+      onError={handleError}
+      uploadId={uploadId}
+      jobDescription={jobDescription}
+    />
   );
 }
 

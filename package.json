@@ -24,10 +24,6 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
     "*.{ts,tsx}": "bash -c 'npm run type-check'"
   },
   "dependencies": {
@@ -42,8 +38,10 @@
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-react": "^5.18.0",
     "bcryptjs": "^3.0.3",
+    "mammoth": "^1.11.0",
     "next": "16.1.6",
     "next-auth": "^5.0.0-beta.30",
+    "pdf-parse": "^1.1.1",
     "prisma": "^5.22.0",
     "react": "^18",
     "react-dom": "^18",
@@ -60,6 +58,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^20",
+    "@types/pdf-parse": "^1.1.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "dotenv": "^17.3.1",

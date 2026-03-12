@@ -43,6 +43,32 @@ export async function generateDownloadPresignedUrl(key: string): Promise<string>
   );
 }
 
+export async function downloadFileContent(key: string): Promise<Buffer> {
+  return withRetry(
+    async () => {
+      const command = new GetObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: key,
+      });
+      const response = await s3Client.send(command);
+
+      if (!response.Body) {
+        throw new Error(`Empty response body for S3 key: ${key}`);
+      }
+
+      // Convert readable stream to Buffer
+      const chunks: Uint8Array[] = [];
+      const stream = response.Body as AsyncIterable<Uint8Array>;
+      for await (const chunk of stream) {
+        chunks.push(chunk);
+      }
+      return Buffer.concat(chunks);
+    },
+    RETRY_POLICIES.s3Upload,
+    's3:downloadFile'
+  );
+}
+
 export async function deleteFile(key: string): Promise<void> {
   return withRetry(
     async () => {
