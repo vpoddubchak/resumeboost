@@ -149,6 +149,7 @@ export async function POST(request: Request) {
             strengths: analysisResult.strengths,
             weaknesses: analysisResult.weaknesses,
             recommendations: analysisResult.recommendations,
+            categoryScores: analysisResult.categoryScores,
           },
           score: analysisResult.matchScore,
           recommendations: {

@@ -22,5 +22,10 @@
     "Include specific metrics: e.g., 'Reduced deployment time by 87.5% (2h → 15min)'",
     "Mention cross-functional collaboration examples with product/design teams",
     "Consider adding links to notable open source contributions"
-  ]
+  ],
+  "categoryScores": {
+    "skills": 95,
+    "experience": 90,
+    "qualifications": 88
+  }
 }

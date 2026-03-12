@@ -17,6 +17,11 @@ export interface ClaudeAnalysisResult {
   strengths: string[];
   weaknesses: string[];
   recommendations: string[];
+  categoryScores?: {
+    skills: number;
+    experience: number;
+    qualifications: number;
+  };
 }
 
 const claudeResponseSchema = z.object({
@@ -24,6 +29,11 @@ const claudeResponseSchema = z.object({
   strengths: z.array(z.string()).min(1),
   weaknesses: z.array(z.string()),
   recommendations: z.array(z.string()).min(1),
+  categoryScores: z.object({
+    skills: z.number().int().min(0).max(100),
+    experience: z.number().int().min(0).max(100),
+    qualifications: z.number().int().min(0).max(100),
+  }).optional(),
 });
 
 const ANALYSIS_TIMEOUT_MS = 35_000; // 35s — 5s buffer above 30s SLA (NFR1)
@@ -100,7 +110,8 @@ Return ONLY this JSON structure (no markdown, no explanation):
   "matchScore": <integer 0-100>,
   "strengths": ["<strength 1>", ...],
   "weaknesses": ["<gap 1>", ...],
-  "recommendations": ["<action item 1>", ...]
+  "recommendations": ["<action item 1>", ...],
+  "categoryScores": { "skills": <0-100>, "experience": <0-100>, "qualifications": <0-100> }
 }`;
 }
 

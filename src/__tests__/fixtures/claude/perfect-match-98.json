@@ -22,5 +22,10 @@
     "Prepare to discuss salary expectations and growth opportunities",
     "Emphasize interest in the specific challenges this role presents",
     "Be ready to explain why you're interested in this level position"
-  ]
+  ],
+  "categoryScores": {
+    "skills": 99,
+    "experience": 98,
+    "qualifications": 97
+  }
 }

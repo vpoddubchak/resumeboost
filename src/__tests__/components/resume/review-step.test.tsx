@@ -53,6 +53,18 @@ jest.mock('@/app/components/resume/analysis-progress', () => ({
   AnalysisProgress: () => <div>AnalysisProgress</div>,
 }));
 
+jest.mock('@/app/components/resume/category-breakdown', () => ({
+  CategoryBreakdown: ({ categories }: { categories: Array<{ key: string; label: string; score: number }> }) => (
+    <div data-testid="category-breakdown">
+      {categories.map((c) => (
+        <div key={c.key} data-testid={`category-${c.key}`}>
+          {c.label}: {c.score}%
+        </div>
+      ))}
+    </div>
+  ),
+}));
+
 import ResumeAnalysisPage from '@/app/resume-analysis/page';
 
 describe('ReviewStep (via ResumeAnalysisPage at step 3)', () => {
@@ -183,6 +195,86 @@ describe('ReviewStep (via ResumeAnalysisPage at step 3)', () => {
       expect(screen.getByText('Resume Match Score')).toBeInTheDocument();
       const scores = screen.getAllByText('0%');
       expect(scores.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('CategoryBreakdown integration', () => {
+    it('renders CategoryBreakdown component in ReviewStep', () => {
+      mockAnalysis = {
+        analysisId: 4,
+        score: 78,
+        analysisData: {
+          matchScore: 78,
+          strengths: ['Good TypeScript skills'],
+          weaknesses: ['Limited cloud experience'],
+          recommendations: ['Learn AWS basics'],
+          categoryScores: { skills: 80, experience: 75, qualifications: 70 },
+        },
+        recommendations: null,
+        createdAt: '2026-03-12T10:00:00.000Z',
+      };
+      render(<ResumeAnalysisPage />);
+      expect(screen.getByTestId('category-breakdown')).toBeInTheDocument();
+    });
+
+    it('passes correct category scores to CategoryBreakdown', () => {
+      mockAnalysis = {
+        analysisId: 5,
+        score: 78,
+        analysisData: {
+          matchScore: 78,
+          strengths: ['Good skills'],
+          weaknesses: [],
+          recommendations: ['Improve experience'],
+          categoryScores: { skills: 80, experience: 75, qualifications: 70 },
+        },
+        recommendations: null,
+        createdAt: '2026-03-12T10:00:00.000Z',
+      };
+      render(<ResumeAnalysisPage />);
+      expect(screen.getByTestId('category-skills')).toHaveTextContent('Skills Match: 80%');
+      expect(screen.getByTestId('category-experience')).toHaveTextContent('Experience Match: 75%');
+      expect(screen.getByTestId('category-qualifications')).toHaveTextContent('Qualifications Match: 70%');
+    });
+
+    it('categoryScores defaults to 0 when missing from analysisData', () => {
+      mockAnalysis = {
+        analysisId: 6,
+        score: 50,
+        analysisData: {
+          matchScore: 50,
+          strengths: ['Some skill'],
+          weaknesses: [],
+          recommendations: ['Do something'],
+        },
+        recommendations: null,
+        createdAt: '2026-03-12T10:00:00.000Z',
+      };
+      render(<ResumeAnalysisPage />);
+      expect(screen.getByTestId('category-skills')).toHaveTextContent('Skills Match: 0%');
+      expect(screen.getByTestId('category-experience')).toHaveTextContent('Experience Match: 0%');
+      expect(screen.getByTestId('category-qualifications')).toHaveTextContent('Qualifications Match: 0%');
+    });
+
+    it('CategoryBreakdown renders between score section and strengths section', () => {
+      mockAnalysis = {
+        analysisId: 7,
+        score: 82,
+        analysisData: {
+          matchScore: 82,
+          strengths: ['Good TypeScript skills'],
+          weaknesses: [],
+          recommendations: ['Learn AWS'],
+          categoryScores: { skills: 85, experience: 80, qualifications: 78 },
+        },
+        recommendations: null,
+        createdAt: '2026-03-12T10:00:00.000Z',
+      };
+      render(<ResumeAnalysisPage />);
+      const breakdown = screen.getByTestId('category-breakdown');
+      const strengths = screen.getByText('Good TypeScript skills');
+      // category-breakdown should appear before strengths content in DOM
+      expect(breakdown.compareDocumentPosition(strengths) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
   });
 });

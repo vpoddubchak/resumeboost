@@ -29,5 +29,10 @@
     "Seek mentorship opportunities or junior developer guidance roles",
     "Consider mid-level positions to bridge the experience gap",
     "Focus on modern JavaScript frameworks and abandon legacy tech"
-  ]
+  ],
+  "categoryScores": {
+    "skills": 30,
+    "experience": 25,
+    "qualifications": 40
+  }
 }

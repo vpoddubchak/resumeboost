@@ -17,6 +17,11 @@ export interface ClaudeAnalysisResult {
   strengths: string[];
   weaknesses: string[];
   recommendations: string[];
+  categoryScores?: {
+    skills: number;
+    experience: number;
+    qualifications: number;
+  };
 }
 
 /**

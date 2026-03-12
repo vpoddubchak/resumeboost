@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useUIStore, selectCurrentStep } from '@/app/store/ui-store';
 import { useResumeStore, selectUploadStatus, selectJobDescription, selectAnalysisResult } from '@/app/store/resume-store';
 import { StepNavigation } from '@/app/components/resume/step-navigation';
@@ -8,8 +9,16 @@ import { JobDescriptionInput } from '@/app/components/resume/job-description-inp
 import { UploadProgress } from '@/app/components/resume/upload-progress';
 import { AnalysisProgress } from '@/app/components/resume/analysis-progress';
 import { AnalysisResults } from '@/app/components/resume/analysis-results';
+import { CategoryBreakdown } from '@/app/components/resume/category-breakdown';
+import type { CategoryScore } from '@/app/components/resume/category-breakdown';
 import type { AnalysisResponseData } from '@/app/components/resume/analysis-progress';
 import type { AnalysisResult } from '@/app/store/types';
+
+const CATEGORY_KEYWORDS = {
+  skills: ['skill', 'language', 'tool', 'framework', 'technology', 'proficien', 'knowledge'],
+  experience: ['experience', 'year', 'worked', 'role', 'position', 'career', 'job', 'employed'],
+  qualifications: ['degree', 'certif', 'education', 'qualification', 'academic', 'diploma', 'graduate'],
+} as const;
 
 function UploadStep() {
   const uploadStatus = useResumeStore(selectUploadStatus);
@@ -138,11 +147,35 @@ function ReviewStep() {
   }
 
   const matchScore = analysis.score ?? 0;
-  const { strengths = [], weaknesses = [], recommendations = [] } = (analysis.analysisData ?? {}) as {
+  const {
+    strengths = [],
+    weaknesses = [],
+    recommendations = [],
+    categoryScores = { skills: 0, experience: 0, qualifications: 0 },
+  } = (analysis.analysisData ?? {}) as {
     strengths?: string[];
     weaknesses?: string[];
     recommendations?: string[];
+    categoryScores?: { skills: number; experience: number; qualifications: number };
   };
+
+  const categories = useMemo(() => {
+    const CATEGORY_KEYS = ['skills', 'experience', 'qualifications'] as const;
+    const details: Record<string, string[]> = { skills: [], experience: [], qualifications: [] };
+    [...strengths, ...weaknesses].forEach((item, idx) => {
+      const lower = item.toLowerCase();
+      const matched = CATEGORY_KEYS.find(
+        (cat) => CATEGORY_KEYWORDS[cat].some((kw) => lower.includes(kw))
+      );
+      const cat = matched ?? CATEGORY_KEYS[idx % 3];
+      details[cat].push(item);
+    });
+    return [
+      { key: 'skills', label: 'Skills Match', score: categoryScores.skills, details: details.skills },
+      { key: 'experience', label: 'Experience Match', score: categoryScores.experience, details: details.experience },
+      { key: 'qualifications', label: 'Qualifications Match', score: categoryScores.qualifications, details: details.qualifications },
+    ] satisfies CategoryScore[];
+  }, [strengths, weaknesses, categoryScores]);
 
   return (
     <div className="w-full space-y-6">
@@ -151,6 +184,7 @@ function ReviewStep() {
         strengths={strengths}
         weaknesses={weaknesses}
         recommendations={recommendations}
+        categoryBreakdown={<CategoryBreakdown categories={categories} />}
       />
 
       <div className="w-full max-w-2xl mx-auto space-y-3">

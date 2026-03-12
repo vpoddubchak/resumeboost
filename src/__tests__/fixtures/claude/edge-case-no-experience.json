@@ -26,5 +26,10 @@
     "Consider bootcamp or intensive training program",
     "Network with professionals in the field for mentorship",
     "Gain 3-5 years of experience before reapplying to senior positions"
-  ]
+  ],
+  "categoryScores": {
+    "skills": 15,
+    "experience": 5,
+    "qualifications": 18
+  }
 }

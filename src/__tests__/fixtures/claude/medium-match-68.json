@@ -25,5 +25,10 @@
     "Contribute to open source projects relevant to the tech stack",
     "Quantify all achievements with specific metrics (users, performance, etc.)",
     "Consider taking on a side project involving real-time features"
-  ]
+  ],
+  "categoryScores": {
+    "skills": 65,
+    "experience": 70,
+    "qualifications": 62
+  }
 }

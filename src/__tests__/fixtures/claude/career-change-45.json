@@ -29,5 +29,10 @@
     "Consider taking a step back in seniority to enter the field",
     "Highlight transferable skills from previous career more prominently",
     "Network actively to find opportunities that value career changers"
-  ]
+  ],
+  "categoryScores": {
+    "skills": 48,
+    "experience": 35,
+    "qualifications": 50
+  }
 }

@@ -8,6 +8,7 @@ interface AnalysisResultsProps {
   strengths: string[];
   weaknesses: string[];
   recommendations: string[];
+  categoryBreakdown?: React.ReactNode;
 }
 
 const SCORE_THRESHOLDS = {
@@ -72,6 +73,7 @@ export function AnalysisResults({
   strengths,
   weaknesses,
   recommendations,
+  categoryBreakdown,
 }: AnalysisResultsProps) {
   const scoreLabel = getScoreLabel(matchScore);
   const scoreLabelClass = getScoreLabelClass(matchScore);
@@ -89,6 +91,9 @@ export function AnalysisResults({
           {scoreLabel}
         </p>
       </section>
+
+      {/* Category Breakdown */}
+      {categoryBreakdown}
 
       {/* Strengths */}
       <CollapsibleCard title="Strengths">
@@ -138,5 +143,3 @@ export function AnalysisResults({
     </div>
   );
 }
-
-export default AnalysisResults;
