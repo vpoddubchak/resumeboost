@@ -1,6 +1,3 @@
-import pdfParse from 'pdf-parse';
-import mammoth from 'mammoth';
-
 const MAX_TEXT_LENGTH = 50_000; // ~12,500 tokens — keeps total prompt under 16k tokens
 
 export class UnsupportedFileTypeError extends Error {
@@ -22,11 +19,13 @@ export async function extractTextFromFile(
       break;
     }
     case 'application/pdf': {
+      const pdfParse = (await import('pdf-parse')).default;
       const pdfData = await pdfParse(buffer);
       text = pdfData.text;
       break;
     }
     case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
+      const mammoth = await import('mammoth');
       const result = await mammoth.extractRawText({ buffer });
       text = result.value;
       break;
