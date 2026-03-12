@@ -23,9 +23,24 @@
     "Mention cross-functional collaboration examples with product/design teams",
     "Consider adding links to notable open source contributions"
   ],
-  "categoryScores": {
-    "skills": 95,
-    "experience": 90,
-    "qualifications": 88
+  "categoryBreakdown": {
+    "skills": {
+      "score": 95,
+      "matched": ["React and Node.js expertise exceeding requirements", "TypeScript experience across projects", "AWS Solutions Architect certification", "CI/CD pipeline implementation"],
+      "gaps": ["No specific real-time systems (WebSockets/SSE) mentioned", "Limited Kubernetes detail despite CKA certification"],
+      "analysis": "Exceptional technical skills alignment with all core requirements met and exceeded. Minor gaps in real-time systems and Kubernetes depth."
+    },
+    "experience": {
+      "score": 90,
+      "matched": ["8+ years vs 5+ required", "Leadership and mentoring of junior developers", "Microservices architecture in production", "Open source contributions"],
+      "gaps": ["Missing quantitative scalability metrics", "Limited cross-functional collaboration examples"],
+      "analysis": "Strong experience profile with tenure well exceeding requirements and demonstrated leadership impact."
+    },
+    "qualifications": {
+      "score": 88,
+      "matched": ["AWS Solutions Architect certification", "CKA (Certified Kubernetes Administrator)", "Microservices architecture expertise"],
+      "gaps": ["No specific mention of real-time system certifications or formal training"],
+      "analysis": "Well-qualified candidate with relevant certifications and architectural credentials that align closely with the role."
+    }
   }
 }

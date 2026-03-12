@@ -26,9 +26,24 @@
     "Quantify all achievements with specific metrics (users, performance, etc.)",
     "Consider taking on a side project involving real-time features"
   ],
-  "categoryScores": {
-    "skills": 65,
-    "experience": 70,
-    "qualifications": 62
+  "categoryBreakdown": {
+    "skills": {
+      "score": 65,
+      "matched": ["React and Node.js foundation", "CI/CD and modern development practices", "Some AWS exposure"],
+      "gaps": ["No TypeScript mentioned", "No real-time systems experience", "AWS knowledge appears surface-level"],
+      "analysis": "Solid foundational skills but missing key technical depth in TypeScript and cloud platforms that the role demands."
+    },
+    "experience": {
+      "score": 70,
+      "matched": ["Meets minimum 5+ years requirement", "Experience with testing and CI/CD"],
+      "gaps": ["Limited microservices architecture exposure", "No leadership or mentoring examples", "Scalability claims lack supporting metrics"],
+      "analysis": "Experience meets minimum thresholds but lacks the depth in distributed systems and leadership expected at this level."
+    },
+    "qualifications": {
+      "score": 62,
+      "matched": ["Continuous learning through certifications", "Modern development practices"],
+      "gaps": ["No open source contributions highlighted", "Missing cloud certifications", "No formal microservices training mentioned"],
+      "analysis": "Shows commitment to learning but lacks the formal certifications and demonstrated expertise the position requires."
+    }
   }
 }

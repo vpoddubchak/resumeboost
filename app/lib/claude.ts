@@ -10,29 +10,42 @@ class ClaudeParseError extends Error {
   }
 }
 
-// NOTE: An identical interface exists in src/__tests__/fixtures/claude/index.ts
-// Source of truth is THIS file (app/lib/claude.ts). Tests should import from here.
+// Source of truth for Claude response types. Re-exported by src/__tests__/fixtures/claude/index.ts.
+export interface CategoryBreakdownItem {
+  score: number;
+  matched: string[];
+  gaps: string[];
+  analysis: string;
+}
+
 export interface ClaudeAnalysisResult {
   matchScore: number;
   strengths: string[];
   weaknesses: string[];
   recommendations: string[];
-  categoryScores?: {
-    skills: number;
-    experience: number;
-    qualifications: number;
+  categoryBreakdown?: {
+    skills: CategoryBreakdownItem;
+    experience: CategoryBreakdownItem;
+    qualifications: CategoryBreakdownItem;
   };
 }
+
+const categoryBreakdownItemSchema = z.object({
+  score: z.number().int().min(0).max(100),
+  matched: z.array(z.string()),
+  gaps: z.array(z.string()),
+  analysis: z.string(),
+});
 
 const claudeResponseSchema = z.object({
   matchScore: z.number().int().min(0).max(100),
   strengths: z.array(z.string()).min(1),
   weaknesses: z.array(z.string()),
   recommendations: z.array(z.string()).min(1),
-  categoryScores: z.object({
-    skills: z.number().int().min(0).max(100),
-    experience: z.number().int().min(0).max(100),
-    qualifications: z.number().int().min(0).max(100),
+  categoryBreakdown: z.object({
+    skills: categoryBreakdownItemSchema,
+    experience: categoryBreakdownItemSchema,
+    qualifications: categoryBreakdownItemSchema,
   }).optional(),
 });
 
@@ -57,7 +70,7 @@ export async function analyzeResume(
         const message = await anthropic.messages.create(
           {
             model: MODEL,
-            max_tokens: 2048, // Spike showed 1,248 output tokens — 1024 risks truncation
+            max_tokens: 2560, // Increased for richer categoryBreakdown response
             messages: [
               {
                 role: 'user',
@@ -108,10 +121,29 @@ ${jobDescription}
 Return ONLY this JSON structure (no markdown, no explanation):
 {
   "matchScore": <integer 0-100>,
-  "strengths": ["<strength 1>", ...],
-  "weaknesses": ["<gap 1>", ...],
-  "recommendations": ["<action item 1>", ...],
-  "categoryScores": { "skills": <0-100>, "experience": <0-100>, "qualifications": <0-100> }
+  "strengths": ["<overall strength 1>", ...],
+  "weaknesses": ["<overall gap 1>", ...],
+  "recommendations": ["<specific action item 1>", ...],
+  "categoryBreakdown": {
+    "skills": {
+      "score": <integer 0-100>,
+      "matched": ["<specific skill from resume that matches a job requirement>", ...],
+      "gaps": ["<specific skill required by the job but missing or weak in resume>", ...],
+      "analysis": "<1-2 sentence assessment of skills alignment>"
+    },
+    "experience": {
+      "score": <integer 0-100>,
+      "matched": ["<specific experience or achievement that aligns with requirements>", ...],
+      "gaps": ["<specific experience required but missing from resume>", ...],
+      "analysis": "<1-2 sentence assessment of experience alignment>"
+    },
+    "qualifications": {
+      "score": <integer 0-100>,
+      "matched": ["<specific qualification, degree, or certification that matches>", ...],
+      "gaps": ["<specific qualification required but absent from resume>", ...],
+      "analysis": "<1-2 sentence assessment of qualifications alignment>"
+    }
+  }
 }`;
 }
 

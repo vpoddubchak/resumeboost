@@ -23,9 +23,24 @@
     "Emphasize interest in the specific challenges this role presents",
     "Be ready to explain why you're interested in this level position"
   ],
-  "categoryScores": {
-    "skills": 99,
-    "experience": 98,
-    "qualifications": 97
+  "categoryBreakdown": {
+    "skills": {
+      "score": 99,
+      "matched": ["Expert-level React and Node.js", "Advanced TypeScript across all projects", "Deep AWS expertise", "Real-time systems with WebSocket implementations", "Kubernetes expertise in production", "DevOps and CI/CD optimization"],
+      "gaps": ["May need to adjust to company-specific tooling"],
+      "analysis": "Near-perfect skills alignment — exceeds all technical requirements with demonstrated expertise at enterprise scale."
+    },
+    "experience": {
+      "score": 98,
+      "matched": ["10+ years vs 5+ required", "Microservices at scale (5M+ users)", "Technical leadership and team mentoring", "Active open source contributions", "Cross-functional team collaboration"],
+      "gaps": ["May be overqualified — risk of disengagement"],
+      "analysis": "Exceptional experience depth that doubles the requirement, with proven impact at significant scale and clear leadership track record."
+    },
+    "qualifications": {
+      "score": 97,
+      "matched": ["AWS certifications (multiple)", "CKA certification", "Proven architectural expertise", "Strong community presence through open source"],
+      "gaps": ["Salary expectations may exceed budget"],
+      "analysis": "Outstanding qualifications profile with multiple relevant certifications and a verifiable track record of technical excellence."
+    }
   }
 }

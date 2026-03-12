@@ -12,17 +12,9 @@ import perfectMatch98 from './perfect-match-98.json';
 import noExperience12 from './edge-case-no-experience.json';
 import careerChange45 from './career-change-45.json';
 
-export interface ClaudeAnalysisResult {
-  matchScore: number;
-  strengths: string[];
-  weaknesses: string[];
-  recommendations: string[];
-  categoryScores?: {
-    skills: number;
-    experience: number;
-    qualifications: number;
-  };
-}
+// Re-export from source of truth — do NOT duplicate interfaces here
+export type { CategoryBreakdownItem, ClaudeAnalysisResult } from '@/app/lib/claude';
+import type { ClaudeAnalysisResult } from '@/app/lib/claude';
 
 /**
  * All available mock fixtures
@@ -70,7 +62,7 @@ export function createMockClaudeResponse(fixture: ClaudeAnalysisResult) {
         text: JSON.stringify(fixture, null, 2),
       },
     ],
-    model: 'claude-opus-4-5',
+    model: 'claude-sonnet-4-5',
     stop_reason: 'end_turn',
     usage: {
       input_tokens: 985,

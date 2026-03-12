@@ -30,9 +30,24 @@
     "Consider mid-level positions to bridge the experience gap",
     "Focus on modern JavaScript frameworks and abandon legacy tech"
   ],
-  "categoryScores": {
-    "skills": 30,
-    "experience": 25,
-    "qualifications": 40
+  "categoryBreakdown": {
+    "skills": {
+      "score": 30,
+      "matched": ["Some JavaScript development experience", "Web development fundamentals"],
+      "gaps": ["No React experience", "No Node.js backend skills", "No TypeScript", "No cloud platform knowledge", "No microservices or distributed systems"],
+      "analysis": "Critical skill gaps across nearly all technical requirements. The current stack (jQuery/PHP) is outdated for this senior role."
+    },
+    "experience": {
+      "score": 25,
+      "matched": ["Some web development work history"],
+      "gaps": ["Only 2 years vs 5+ required", "No CI/CD pipeline experience", "No leadership or mentoring", "No database experience (SQL/NoSQL)"],
+      "analysis": "Significant experience gap — less than half the required tenure with no evidence of the complexity or scale expected."
+    },
+    "qualifications": {
+      "score": 40,
+      "matched": ["Shows willingness to learn through education section"],
+      "gaps": ["No cloud certifications", "No modern framework training", "Missing enterprise software development exposure"],
+      "analysis": "Educational foundation exists but lacks the technical certifications and professional credentials required for a senior role."
+    }
   }
 }

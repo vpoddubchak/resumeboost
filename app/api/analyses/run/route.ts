@@ -1,5 +1,6 @@
 import { auth } from '@/app/lib/auth';
 import prisma from '@/app/lib/prisma';
+import type { Prisma } from '@prisma/client';
 import { checkRateLimit, RATE_LIMITS, rateLimitResponse } from '@/app/lib/rate-limit';
 import { analyzeRequestSchema, validateBody } from '@/app/lib/validations';
 import { downloadFileContent } from '@/src/lib/s3';
@@ -149,8 +150,14 @@ export async function POST(request: Request) {
             strengths: analysisResult.strengths,
             weaknesses: analysisResult.weaknesses,
             recommendations: analysisResult.recommendations,
-            categoryScores: analysisResult.categoryScores,
-          },
+            ...(analysisResult.categoryBreakdown && {
+              categoryBreakdown: {
+                skills: { ...analysisResult.categoryBreakdown.skills },
+                experience: { ...analysisResult.categoryBreakdown.experience },
+                qualifications: { ...analysisResult.categoryBreakdown.qualifications },
+              },
+            }),
+          } as Prisma.InputJsonObject,
           score: analysisResult.matchScore,
           recommendations: {
             strengths: analysisResult.strengths,

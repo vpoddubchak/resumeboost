@@ -14,12 +14,6 @@ import type { CategoryScore } from '@/app/components/resume/category-breakdown';
 import type { AnalysisResponseData } from '@/app/components/resume/analysis-progress';
 import type { AnalysisResult } from '@/app/store/types';
 
-const CATEGORY_KEYWORDS = {
-  skills: ['skill', 'language', 'tool', 'framework', 'technology', 'proficien', 'knowledge'],
-  experience: ['experience', 'year', 'worked', 'role', 'position', 'career', 'job', 'employed'],
-  qualifications: ['degree', 'certif', 'education', 'qualification', 'academic', 'diploma', 'graduate'],
-} as const;
-
 function UploadStep() {
   const uploadStatus = useResumeStore(selectUploadStatus);
   const jobDescription = useResumeStore(selectJobDescription);
@@ -147,35 +141,36 @@ function ReviewStep() {
   }
 
   const matchScore = analysis.score ?? 0;
-  const {
-    strengths = [],
-    weaknesses = [],
-    recommendations = [],
-    categoryScores = { skills: 0, experience: 0, qualifications: 0 },
-  } = (analysis.analysisData ?? {}) as {
-    strengths?: string[];
-    weaknesses?: string[];
-    recommendations?: string[];
-    categoryScores?: { skills: number; experience: number; qualifications: number };
-  };
+  const data = (analysis.analysisData ?? {}) as Record<string, unknown>;
+  const strengths = (data.strengths as string[] | undefined) ?? [];
+  const weaknesses = (data.weaknesses as string[] | undefined) ?? [];
+  const recommendations = (data.recommendations as string[] | undefined) ?? [];
 
   const categories = useMemo(() => {
-    const CATEGORY_KEYS = ['skills', 'experience', 'qualifications'] as const;
-    const details: Record<string, string[]> = { skills: [], experience: [], qualifications: [] };
-    [...strengths, ...weaknesses].forEach((item, idx) => {
-      const lower = item.toLowerCase();
-      const matched = CATEGORY_KEYS.find(
-        (cat) => CATEGORY_KEYWORDS[cat].some((kw) => lower.includes(kw))
-      );
-      const cat = matched ?? CATEGORY_KEYS[idx % 3];
-      details[cat].push(item);
-    });
+    const defaultItem = { score: 0, matched: [] as string[], gaps: [] as string[], analysis: '' };
+
+    // Backward compat: old records have categoryScores (flat numbers), new have categoryBreakdown
+    const cb = data.categoryBreakdown as {
+      skills: { score: number; matched: string[]; gaps: string[]; analysis: string };
+      experience: { score: number; matched: string[]; gaps: string[]; analysis: string };
+      qualifications: { score: number; matched: string[]; gaps: string[]; analysis: string };
+    } | undefined;
+
+    const legacy = data.categoryScores as {
+      skills: number; experience: number; qualifications: number;
+    } | undefined;
+
+    const skills = cb?.skills ?? { ...defaultItem, score: legacy?.skills ?? 0 };
+    const experience = cb?.experience ?? { ...defaultItem, score: legacy?.experience ?? 0 };
+    const qualifications = cb?.qualifications ?? { ...defaultItem, score: legacy?.qualifications ?? 0 };
+
     return [
-      { key: 'skills', label: 'Skills Match', score: categoryScores.skills, details: details.skills },
-      { key: 'experience', label: 'Experience Match', score: categoryScores.experience, details: details.experience },
-      { key: 'qualifications', label: 'Qualifications Match', score: categoryScores.qualifications, details: details.qualifications },
+      { key: 'skills', label: 'Skills Match', ...skills },
+      { key: 'experience', label: 'Experience Match', ...experience },
+      { key: 'qualifications', label: 'Qualifications Match', ...qualifications },
     ] satisfies CategoryScore[];
-  }, [strengths, weaknesses, categoryScores]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- data ref is stable from Zustand store
+  }, [analysis.analysisData]);
 
   return (
     <div className="w-full space-y-6">

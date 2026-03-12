@@ -208,7 +208,11 @@ describe('ReviewStep (via ResumeAnalysisPage at step 3)', () => {
           strengths: ['Good TypeScript skills'],
           weaknesses: ['Limited cloud experience'],
           recommendations: ['Learn AWS basics'],
-          categoryScores: { skills: 80, experience: 75, qualifications: 70 },
+          categoryBreakdown: {
+            skills: { score: 80, matched: ['TypeScript skills'], gaps: [], analysis: 'Good skills.' },
+            experience: { score: 75, matched: ['Web development'], gaps: ['No cloud'], analysis: 'Some experience.' },
+            qualifications: { score: 70, matched: ['CS degree'], gaps: [], analysis: 'Adequate quals.' },
+          },
         },
         recommendations: null,
         createdAt: '2026-03-12T10:00:00.000Z',
@@ -226,7 +230,11 @@ describe('ReviewStep (via ResumeAnalysisPage at step 3)', () => {
           strengths: ['Good skills'],
           weaknesses: [],
           recommendations: ['Improve experience'],
-          categoryScores: { skills: 80, experience: 75, qualifications: 70 },
+          categoryBreakdown: {
+            skills: { score: 80, matched: ['Good skills'], gaps: [], analysis: '' },
+            experience: { score: 75, matched: [], gaps: [], analysis: '' },
+            qualifications: { score: 70, matched: [], gaps: [], analysis: '' },
+          },
         },
         recommendations: null,
         createdAt: '2026-03-12T10:00:00.000Z',
@@ -237,7 +245,7 @@ describe('ReviewStep (via ResumeAnalysisPage at step 3)', () => {
       expect(screen.getByTestId('category-qualifications')).toHaveTextContent('Qualifications Match: 70%');
     });
 
-    it('categoryScores defaults to 0 when missing from analysisData', () => {
+    it('categoryBreakdown defaults to score 0 when missing from analysisData', () => {
       mockAnalysis = {
         analysisId: 6,
         score: 50,
@@ -256,6 +264,26 @@ describe('ReviewStep (via ResumeAnalysisPage at step 3)', () => {
       expect(screen.getByTestId('category-qualifications')).toHaveTextContent('Qualifications Match: 0%');
     });
 
+    it('backward compat: old categoryScores format renders scores correctly', () => {
+      mockAnalysis = {
+        analysisId: 8,
+        score: 72,
+        analysisData: {
+          matchScore: 72,
+          strengths: ['Good skills'],
+          weaknesses: [],
+          recommendations: ['Improve'],
+          categoryScores: { skills: 85, experience: 70, qualifications: 60 },
+        },
+        recommendations: null,
+        createdAt: '2026-03-12T10:00:00.000Z',
+      };
+      render(<ResumeAnalysisPage />);
+      expect(screen.getByTestId('category-skills')).toHaveTextContent('Skills Match: 85%');
+      expect(screen.getByTestId('category-experience')).toHaveTextContent('Experience Match: 70%');
+      expect(screen.getByTestId('category-qualifications')).toHaveTextContent('Qualifications Match: 60%');
+    });
+
     it('CategoryBreakdown renders between score section and strengths section', () => {
       mockAnalysis = {
         analysisId: 7,
@@ -265,7 +293,11 @@ describe('ReviewStep (via ResumeAnalysisPage at step 3)', () => {
           strengths: ['Good TypeScript skills'],
           weaknesses: [],
           recommendations: ['Learn AWS'],
-          categoryScores: { skills: 85, experience: 80, qualifications: 78 },
+          categoryBreakdown: {
+            skills: { score: 85, matched: ['TypeScript'], gaps: [], analysis: '' },
+            experience: { score: 80, matched: [], gaps: [], analysis: '' },
+            qualifications: { score: 78, matched: [], gaps: [], analysis: '' },
+          },
         },
         recommendations: null,
         createdAt: '2026-03-12T10:00:00.000Z',

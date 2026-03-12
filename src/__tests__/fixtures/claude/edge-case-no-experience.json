@@ -27,9 +27,24 @@
     "Network with professionals in the field for mentorship",
     "Gain 3-5 years of experience before reapplying to senior positions"
   ],
-  "categoryScores": {
-    "skills": 15,
-    "experience": 5,
-    "qualifications": 18
+  "categoryBreakdown": {
+    "skills": {
+      "score": 15,
+      "matched": ["Basic programming skills from academic projects", "Foundational computer science knowledge"],
+      "gaps": ["No React or Node.js experience", "No cloud platform exposure", "No TypeScript skills", "No CI/CD or DevOps experience", "No microservices knowledge"],
+      "analysis": "Academic knowledge provides a foundation, but virtually all production-level technical skills required for this role are absent."
+    },
+    "experience": {
+      "score": 5,
+      "matched": [],
+      "gaps": ["Zero professional experience vs 5+ required", "No real-world project experience", "No enterprise software exposure", "No team collaboration in professional settings"],
+      "analysis": "No professional experience whatsoever — this is a fundamental mismatch for a senior-level position."
+    },
+    "qualifications": {
+      "score": 18,
+      "matched": ["Recent computer science degree"],
+      "gaps": ["No industry certifications", "No production deployments", "Academic projects don't demonstrate enterprise readiness"],
+      "analysis": "A CS degree provides theoretical grounding, but without professional experience or certifications, qualifications fall far short of requirements."
+    }
   }
 }

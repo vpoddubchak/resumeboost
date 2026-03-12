@@ -6,7 +6,9 @@ export interface CategoryScore {
   key: string;
   label: string;
   score: number;
-  details: string[];
+  matched: string[];
+  gaps: string[];
+  analysis?: string;
 }
 
 interface CategoryBreakdownProps {
@@ -32,7 +34,7 @@ interface CategoryRowProps {
 
 function CategoryRow({ category, animated }: CategoryRowProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const hasDetails = category.details.length > 0;
+  const hasDetails = category.matched.length > 0 || category.gaps.length > 0 || !!category.analysis;
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -89,18 +91,29 @@ function CategoryRow({ category, animated }: CategoryRowProps) {
       </button>
 
       {isOpen && hasDetails && (
-        <ul
-          role="list"
-          aria-label={`${category.label} details`}
-          className="ml-3 sm:ml-48 space-y-1 pb-2"
-        >
-          {category.details.map((item, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-gray-400">
-              <span className="shrink-0 mt-0.5 text-gray-500" aria-hidden="true">•</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="ml-3 sm:ml-48 space-y-2 pb-2">
+          {category.analysis && (
+            <p className="text-sm text-gray-400 italic px-1">{category.analysis}</p>
+          )}
+          <ul
+            role="list"
+            aria-label={`${category.label} details`}
+            className="space-y-1"
+          >
+            {category.matched.map((item, i) => (
+              <li key={`m-${i}`} className="flex items-start gap-2 text-sm text-green-400">
+                <span className="shrink-0 mt-0.5" aria-hidden="true">✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+            {category.gaps.map((item, i) => (
+              <li key={`g-${i}`} className="flex items-start gap-2 text-sm text-red-400">
+                <span className="shrink-0 mt-0.5" aria-hidden="true">✗</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );

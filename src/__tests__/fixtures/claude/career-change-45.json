@@ -30,9 +30,24 @@
     "Highlight transferable skills from previous career more prominently",
     "Network actively to find opportunities that value career changers"
   ],
-  "categoryScores": {
-    "skills": 48,
-    "experience": 35,
-    "qualifications": 50
+  "categoryBreakdown": {
+    "skills": {
+      "score": 48,
+      "matched": ["React and Node.js from bootcamp", "Portfolio projects demonstrating practical skills", "Strong problem-solving from previous career"],
+      "gaps": ["No cloud platform certifications or deep knowledge", "No microservices architecture experience", "No CI/CD pipeline implementation", "Technology depth limited vs senior expectations"],
+      "analysis": "Bootcamp training provides relevant skills but lacks the depth and breadth expected at a senior level in production environments."
+    },
+    "experience": {
+      "score": 35,
+      "matched": ["1 year software development", "Transferable soft skills (communication, teamwork)", "Self-motivated career transition"],
+      "gaps": ["Only 1 year vs 5+ required", "No professional production environment", "Portfolio projects are small-scale vs production requirements", "No leadership or mentoring in tech"],
+      "analysis": "Career transition shows initiative but professional software experience is far below requirements, and no enterprise-scale work is evident."
+    },
+    "qualifications": {
+      "score": 50,
+      "matched": ["Completed coding bootcamp with React/Node.js focus", "Clear career transition plan documented"],
+      "gaps": ["Missing cloud certifications (AWS, GCP, Azure)", "No formal CS degree", "No enterprise software development credentials"],
+      "analysis": "Bootcamp certification demonstrates commitment to the field, but formal qualifications fall short of what senior roles typically require."
+    }
   }
 }

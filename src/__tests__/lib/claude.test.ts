@@ -55,7 +55,7 @@ describe('app/lib/claude - analyzeResume', () => {
     expect(mockCreate).toHaveBeenCalledWith(
       expect.objectContaining({
         model: 'claude-sonnet-4-5',
-        max_tokens: 2048,
+        max_tokens: 2560,
         messages: expect.arrayContaining([
           expect.objectContaining({
             role: 'user',

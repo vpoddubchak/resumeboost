@@ -5,9 +5,9 @@ import { CategoryBreakdown } from '@/app/components/resume/category-breakdown';
 import type { CategoryScore } from '@/app/components/resume/category-breakdown';
 
 const defaultCategories: CategoryScore[] = [
-  { key: 'skills', label: 'Skills Match', score: 80, details: ['Strong React experience', 'TypeScript proficiency'] },
-  { key: 'experience', label: 'Experience Match', score: 60, details: ['5 years experience'] },
-  { key: 'qualifications', label: 'Qualifications Match', score: 40, details: ['Missing AWS certification'] },
+  { key: 'skills', label: 'Skills Match', score: 80, matched: ['Strong React experience', 'TypeScript proficiency'], gaps: ['Missing Docker skills'], analysis: 'Strong technical skills with a minor gap in containerization.' },
+  { key: 'experience', label: 'Experience Match', score: 60, matched: ['5 years experience'], gaps: ['No fintech domain experience'], analysis: 'Meets minimum requirements but lacks domain expertise.' },
+  { key: 'qualifications', label: 'Qualifications Match', score: 40, matched: ['BS Computer Science'], gaps: ['Missing AWS certification', 'No Kubernetes certification'], analysis: 'Educational background is adequate but missing key certifications.' },
 ];
 
 describe('CategoryBreakdown', () => {
@@ -41,7 +41,7 @@ describe('CategoryBreakdown', () => {
   describe('Color coding', () => {
     it('score >= 75 uses green bar (bg-green-500)', () => {
       const categories: CategoryScore[] = [
-        { key: 'skills', label: 'Skills Match', score: 80, details: [] },
+        { key: 'skills', label: 'Skills Match', score: 80, matched: [], gaps: [] },
       ];
       const { container } = render(<CategoryBreakdown categories={categories} />);
       const bar = container.querySelector('.bg-green-500');
@@ -50,7 +50,7 @@ describe('CategoryBreakdown', () => {
 
     it('score >= 50 and < 75 uses yellow bar (bg-yellow-500)', () => {
       const categories: CategoryScore[] = [
-        { key: 'experience', label: 'Experience Match', score: 60, details: [] },
+        { key: 'experience', label: 'Experience Match', score: 60, matched: [], gaps: [] },
       ];
       const { container } = render(<CategoryBreakdown categories={categories} />);
       const bar = container.querySelector('.bg-yellow-500');
@@ -59,7 +59,7 @@ describe('CategoryBreakdown', () => {
 
     it('score < 50 uses red bar (bg-red-500)', () => {
       const categories: CategoryScore[] = [
-        { key: 'qualifications', label: 'Qualifications Match', score: 40, details: [] },
+        { key: 'qualifications', label: 'Qualifications Match', score: 40, matched: [], gaps: [] },
       ];
       const { container } = render(<CategoryBreakdown categories={categories} />);
       const bar = container.querySelector('.bg-red-500');
@@ -68,7 +68,7 @@ describe('CategoryBreakdown', () => {
 
     it('score exactly 75 uses green (boundary)', () => {
       const categories: CategoryScore[] = [
-        { key: 'skills', label: 'Skills Match', score: 75, details: [] },
+        { key: 'skills', label: 'Skills Match', score: 75, matched: [], gaps: [] },
       ];
       const { container } = render(<CategoryBreakdown categories={categories} />);
       expect(container.querySelector('.bg-green-500')).toBeInTheDocument();
@@ -76,7 +76,7 @@ describe('CategoryBreakdown', () => {
 
     it('score exactly 50 uses yellow (boundary)', () => {
       const categories: CategoryScore[] = [
-        { key: 'skills', label: 'Skills Match', score: 50, details: [] },
+        { key: 'skills', label: 'Skills Match', score: 50, matched: [], gaps: [] },
       ];
       const { container } = render(<CategoryBreakdown categories={categories} />);
       expect(container.querySelector('.bg-yellow-500')).toBeInTheDocument();
@@ -84,7 +84,7 @@ describe('CategoryBreakdown', () => {
 
     it('score 49 uses red (below medium boundary)', () => {
       const categories: CategoryScore[] = [
-        { key: 'skills', label: 'Skills Match', score: 49, details: [] },
+        { key: 'skills', label: 'Skills Match', score: 49, matched: [], gaps: [] },
       ];
       const { container } = render(<CategoryBreakdown categories={categories} />);
       expect(container.querySelector('.bg-red-500')).toBeInTheDocument();
@@ -122,12 +122,13 @@ describe('CategoryBreakdown', () => {
       expect(screen.queryByText('Strong React experience')).not.toBeInTheDocument();
     });
 
-    it('clicking a category row expands to show detail items', () => {
+    it('clicking a category row expands to show matched and gap items', () => {
       render(<CategoryBreakdown categories={defaultCategories} />);
       const skillsButton = screen.getByRole('button', { name: /skills match/i });
       fireEvent.click(skillsButton);
       expect(screen.getByText('Strong React experience')).toBeInTheDocument();
       expect(screen.getByText('TypeScript proficiency')).toBeInTheDocument();
+      expect(screen.getByText('Missing Docker skills')).toBeInTheDocument();
     });
 
     it('clicking again collapses the detail panel', () => {
@@ -183,23 +184,32 @@ describe('CategoryBreakdown', () => {
     });
   });
 
-  describe('Empty details array', () => {
-    it('renders category without expand toggle when details is empty', () => {
+  describe('Empty matched and gaps arrays', () => {
+    it('renders category without expand toggle when matched and gaps are empty', () => {
       const categories: CategoryScore[] = [
-        { key: 'skills', label: 'Skills Match', score: 80, details: [] },
+        { key: 'skills', label: 'Skills Match', score: 80, matched: [], gaps: [] },
       ];
       render(<CategoryBreakdown categories={categories} />);
       const btn = screen.getByRole('button', { name: /skills match/i });
       expect(btn).toHaveAttribute('disabled');
     });
 
-    it('empty details: aria-expanded is NOT set on disabled row', () => {
+    it('empty matched/gaps: aria-expanded is NOT set on disabled row', () => {
       const categories: CategoryScore[] = [
-        { key: 'skills', label: 'Skills Match', score: 80, details: [] },
+        { key: 'skills', label: 'Skills Match', score: 80, matched: [], gaps: [] },
       ];
       render(<CategoryBreakdown categories={categories} />);
       const btn = screen.getByRole('button', { name: /skills match/i });
       expect(btn).not.toHaveAttribute('aria-expanded');
+    });
+
+    it('renders with expand toggle when analysis text is provided even if matched/gaps empty', () => {
+      const categories: CategoryScore[] = [
+        { key: 'skills', label: 'Skills Match', score: 80, matched: [], gaps: [], analysis: 'Some analysis text.' },
+      ];
+      render(<CategoryBreakdown categories={categories} />);
+      const btn = screen.getByRole('button', { name: /skills match/i });
+      expect(btn).not.toHaveAttribute('disabled');
     });
   });
 
