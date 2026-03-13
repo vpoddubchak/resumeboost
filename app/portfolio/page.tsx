@@ -3,6 +3,8 @@ import Link from 'next/link';
 import prisma from '@/app/lib/prisma';
 import { PortfolioGallery } from '@/app/components/portfolio/portfolio-gallery';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Portfolio | ResumeBoost',
   description:
