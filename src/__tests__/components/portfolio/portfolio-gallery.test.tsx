@@ -12,6 +12,13 @@ jest.mock('next/image', () => ({
   ),
 }));
 
+jest.mock('next/link', () => ({
+  __esModule: true,
+  default: ({ href, children, className, ...props }: { href: string; children: React.ReactNode; className?: string; [key: string]: unknown }) => (
+    <a href={href} className={className} {...props}>{children}</a>
+  ),
+}));
+
 const makeItem = (overrides: Partial<PortfolioContent> & { content_id: number }): PortfolioContent => ({
   title: `Item ${overrides.content_id}`,
   description: `Description for item ${overrides.content_id}`,

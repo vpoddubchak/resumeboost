@@ -1,5 +1,6 @@
 import type { PortfolioContent } from '@prisma/client';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface PortfolioCardProps {
   item: PortfolioContent;
@@ -7,9 +8,12 @@ interface PortfolioCardProps {
 
 export function PortfolioCard({ item }: PortfolioCardProps) {
   return (
-    <article
-      className="group bg-gray-900 rounded-xl border border-gray-800 overflow-hidden transition-all duration-200 hover:border-blue-600/50 hover:shadow-lg hover:shadow-blue-900/20 focus-within:border-blue-600/50 focus-within:shadow-lg focus-within:shadow-blue-900/20"
+    <Link
+      href={`/portfolio/${item.content_id}`}
+      aria-label={`View case study: ${item.title}`}
+      className="block group bg-gray-900 rounded-xl border border-gray-800 overflow-hidden transition-all duration-200 hover:border-blue-600/50 hover:shadow-lg hover:shadow-blue-900/20 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 focus-visible:outline-none"
     >
+      <div>
       {/* Thumbnail */}
       <div className="relative w-full h-40 bg-gradient-to-br from-blue-900/30 to-purple-900/30 overflow-hidden">
         {item.file_url ? (
@@ -17,6 +21,7 @@ export function PortfolioCard({ item }: PortfolioCardProps) {
             src={item.file_url}
             alt={`${item.title} resume example thumbnail`}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover"
             loading="lazy"
           />
@@ -69,6 +74,7 @@ export function PortfolioCard({ item }: PortfolioCardProps) {
           </div>
         )}
       </div>
-    </article>
+      </div>
+    </Link>
   );
 }

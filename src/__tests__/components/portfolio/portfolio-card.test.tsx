@@ -12,6 +12,13 @@ jest.mock('next/image', () => ({
   },
 }));
 
+jest.mock('next/link', () => ({
+  __esModule: true,
+  default: ({ href, children, className, ...props }: { href: string; children: React.ReactNode; className?: string; [key: string]: unknown }) => (
+    <a href={href} className={className} {...props}>{children}</a>
+  ),
+}));
+
 const baseItem: PortfolioContent = {
   content_id: 1,
   title: 'Senior Software Engineer Resume',
@@ -24,9 +31,22 @@ const baseItem: PortfolioContent = {
 
 describe('PortfolioCard', () => {
   describe('Rendering', () => {
-    it('renders the card as an article element', () => {
+    it('renders the card as a link element', () => {
       render(<PortfolioCard item={baseItem} />);
-      expect(screen.getByRole('article')).toBeInTheDocument();
+      const link = screen.getByRole('link');
+      expect(link).toBeInTheDocument();
+    });
+
+    it('link has correct href to case study detail page', () => {
+      render(<PortfolioCard item={baseItem} />);
+      const link = screen.getByRole('link');
+      expect(link).toHaveAttribute('href', '/portfolio/1');
+    });
+
+    it('link has aria-label with item title', () => {
+      render(<PortfolioCard item={baseItem} />);
+      const link = screen.getByRole('link');
+      expect(link).toHaveAttribute('aria-label', 'View case study: Senior Software Engineer Resume');
     });
 
     it('renders the title', () => {
@@ -100,11 +120,11 @@ describe('PortfolioCard', () => {
       expect(heading).toHaveTextContent('Senior Software Engineer Resume');
     });
 
-    it('card has hover and focus-within transition styles', () => {
-      const { container } = render(<PortfolioCard item={baseItem} />);
-      const article = container.querySelector('article');
-      expect(article?.className).toContain('focus-within');
-      expect(article?.className).toContain('hover:');
+    it('link has hover and focus-visible transition styles', () => {
+      render(<PortfolioCard item={baseItem} />);
+      const link = screen.getByRole('link');
+      expect(link.className).toContain('focus-visible');
+      expect(link.className).toContain('hover:');
     });
   });
 });
