@@ -28,6 +28,14 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ['pdf-parse'],
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.amazonaws.com',
+      },
+    ],
+  },
   async headers() {
     return [
       {

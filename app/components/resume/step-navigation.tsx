@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useUIStore } from '@/app/store/ui-store';
 import type { StepKey, StepNumber } from '@/app/store/types';
 
@@ -34,8 +35,14 @@ export function StepNavigation() {
 
   return (
     <header className="flex items-center justify-between px-4 sm:px-6 py-3 bg-gray-900 border-b border-gray-800">
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex items-center gap-4 shrink-0">
         <span className="text-white font-bold text-lg">ResumeBoost</span>
+        <Link
+          href="/portfolio"
+          className="text-sm text-gray-400 hover:text-blue-400 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none rounded px-1"
+        >
+          Portfolio
+        </Link>
       </div>
 
       <nav className="flex items-center gap-0.5 sm:gap-1" aria-label="Progress steps">

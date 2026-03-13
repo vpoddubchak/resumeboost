@@ -4,6 +4,13 @@ import '@testing-library/jest-dom';
 import { StepNavigation } from '@/app/components/resume/step-navigation';
 import { useUIStore } from '@/app/store/ui-store';
 
+jest.mock('next/link', () => ({
+  __esModule: true,
+  default: ({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) => (
+    <a href={href} className={className}>{children}</a>
+  ),
+}));
+
 beforeEach(() => {
   useUIStore.getState().resetSteps();
 });
@@ -74,6 +81,13 @@ describe('StepNavigation', () => {
   it('should have accessible role for navigation landmark', () => {
     render(<StepNavigation />);
     expect(screen.getByRole('navigation', { name: 'Progress steps' })).toBeInTheDocument();
+  });
+
+  it('should render Portfolio link in header', () => {
+    render(<StepNavigation />);
+    const portfolioLink = screen.getByRole('link', { name: 'Portfolio' });
+    expect(portfolioLink).toBeInTheDocument();
+    expect(portfolioLink).toHaveAttribute('href', '/portfolio');
   });
 
   it('should display step numbers for non-completed steps', () => {
