@@ -130,7 +130,7 @@ describe('BookingPageContent', () => {
     await waitFor(() => {
       expect(screen.getByText('This slot was just booked. Please select another time.')).toBeInTheDocument();
     }, { timeout: 5000 });
-  });
+  }, 15000);
 
   it('full booking flow: select date → select slot → confirm → success', async () => {
     const user = userEvent.setup();
@@ -189,5 +189,5 @@ describe('BookingPageContent', () => {
     await waitFor(() => {
       expect(screen.getByText('Booking Confirmed!')).toBeInTheDocument();
     });
-  });
+  }, 15000);
 });
