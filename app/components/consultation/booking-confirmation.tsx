@@ -8,6 +8,8 @@ interface BookingConfirmationProps {
   consultationTime: string;
   timezone: string;
   onBackToResults?: () => void;
+  onCancel?: () => void;
+  cancelling?: boolean;
 }
 
 export function BookingConfirmation({
@@ -15,6 +17,8 @@ export function BookingConfirmation({
   consultationTime,
   timezone,
   onBackToResults,
+  onCancel,
+  cancelling = false,
 }: BookingConfirmationProps) {
   const t = useTranslations('consultation');
   const tc = useTranslations('common');
@@ -52,6 +56,21 @@ export function BookingConfirmation({
             className="w-full min-h-[48px] py-3 px-6 rounded-xl font-semibold text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-blue-500/25 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 focus-visible:outline-none"
           >
             {t('backToResults')}
+          </button>
+        )}
+        {onCancel && (
+          <button
+            onClick={onCancel}
+            disabled={cancelling}
+            className={[
+              'w-full min-h-[48px] py-3 px-6 rounded-xl font-semibold text-base transition-all duration-200',
+              'focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 focus-visible:outline-none',
+              cancelling
+                ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                : 'bg-red-600/10 hover:bg-red-600/20 text-red-400 hover:text-red-300 border border-red-600/30 cursor-pointer',
+            ].join(' ')}
+          >
+            {cancelling ? t('cancelling') : t('cancelBooking')}
           </button>
         )}
         <Link

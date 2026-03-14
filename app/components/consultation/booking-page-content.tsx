@@ -34,6 +34,7 @@ export function BookingPageContent({ onBackToResults }: BookingPageContentProps)
   const [bookingStatus, setBookingStatus] = useState<BookingStatus>('idle');
   const [bookingResult, setBookingResult] = useState<BookingResult | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [cancelling, setCancelling] = useState(false);
 
   // Fetch available days and check for existing booking on mount
   useEffect(() => {
@@ -146,6 +147,28 @@ export function BookingPageContent({ onBackToResults }: BookingPageContentProps)
     }
   };
 
+  const handleCancelBooking = async () => {
+    setCancelling(true);
+    try {
+      const res = await fetch('/api/consultations/my-booking', { method: 'DELETE' });
+      const json = await res.json();
+
+      if (res.ok && json.success) {
+        setBookingStatus('idle');
+        setBookingResult(null);
+        setSelectedDate(null);
+        setSelectedSlot(null);
+        setErrorMessage(null);
+      } else {
+        setErrorMessage(json.error?.message || t('cancelError'));
+      }
+    } catch {
+      setErrorMessage(t('cancelError'));
+    } finally {
+      setCancelling(false);
+    }
+  };
+
   // Loading session
   if (sessionStatus === 'loading') {
     return (
@@ -181,6 +204,8 @@ export function BookingPageContent({ onBackToResults }: BookingPageContentProps)
         consultationTime={bookingResult.time}
         timezone={bookingResult.timezone}
         onBackToResults={onBackToResults}
+        onCancel={handleCancelBooking}
+        cancelling={cancelling}
       />
     );
   }
