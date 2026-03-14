@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/app/i18n/navigation';
 import { routing } from '@/app/i18n/routing';
 import { LanguageSwitcher } from '@/app/components/language-switcher';
+import { AuthNavItem } from '@/app/components/auth-nav-item';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -62,14 +63,7 @@ export default async function Home({
                 {tc('navigation.consultation')}
               </Link>
             </li>
-            <li>
-              <Link
-                href="/login"
-                className="min-h-[44px] inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 focus-visible:outline-none"
-              >
-                {tc('actions.signIn')}
-              </Link>
-            </li>
+            <AuthNavItem />
           </ul>
         </nav>
         <LanguageSwitcher />

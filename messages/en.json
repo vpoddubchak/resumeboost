@@ -14,7 +14,8 @@
       "loading": "Loading...",
       "tryAgain": "Try again",
       "goBackHome": "Go back home",
-      "back": "Back"
+      "back": "Back",
+      "signOut": "Sign out"
     },
     "featured": "Featured",
     "all": "All",
