@@ -79,22 +79,22 @@ export function FileUpload() {
   const validateFile = useCallback((file: File): string | null => {
     const allowedTypes = ALLOWED_MIME_TYPES as readonly string[];
     if (!allowedTypes.includes(file.type)) {
-      return `Invalid file type "${file.type}". Allowed: ${ALLOWED_TYPES_DISPLAY}`;
+      return t('errorInvalidFileType', { type: file.type, allowed: ALLOWED_TYPES_DISPLAY });
     }
     if (file.size > MAX_FILE_SIZE) {
-      return `File too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum: ${MAX_FILE_SIZE_MB} MB`;
+      return t('errorFileTooLarge', { size: (file.size / 1024 / 1024).toFixed(1), maxSize: String(MAX_FILE_SIZE_MB) });
     }
     if (file.name.length > 255) {
-      return 'File name too long (max 255 characters)';
+      return t('errorFileNameTooLong');
     }
     return null;
-  }, []);
+  }, [t]);
 
   const startUpload = useCallback(
     async (file: File) => {
       const userId = session?.user?.userId;
       if (!userId) {
-        setUploadError('Authentication required. Please sign in.');
+        setUploadError(t('errorAuthRequired'));
         return;
       }
 
@@ -108,7 +108,8 @@ export function FileUpload() {
         });
 
         if (!urlResponse.success) {
-          setUploadError(urlResponse.error.message);
+          const code = urlResponse.error.code;
+          setUploadError(t.has(`apiErrors.${code}`) ? t(`apiErrors.${code}`) : urlResponse.error.message);
           return;
         }
 
@@ -125,19 +126,27 @@ export function FileUpload() {
         });
 
         if (!dbResponse.success) {
-          setUploadError(dbResponse.error.message);
+          const code = dbResponse.error.code;
+          setUploadError(t.has(`apiErrors.${code}`) ? t(`apiErrors.${code}`) : dbResponse.error.message);
           return;
         }
 
         setUploadId(dbResponse.data.upload_id);
       } catch (err) {
-        const message = err instanceof Error ? err.message : 'Upload failed. Please try again.';
+        let message = t('errorUploadFailed');
+        if (err instanceof Error) {
+          if (err.message.includes('Network error')) {
+            message = t('errorNetworkUpload');
+          } else if (err.message.includes('aborted')) {
+            message = t('errorUploadAborted');
+          }
+        }
         setUploadError(message);
       } finally {
         setLoading('upload', false);
       }
     },
-    [session, setUploadProgress, setUploadError, setUploadId, setLoading]
+    [session, setUploadProgress, setUploadError, setUploadId, setLoading, t]
   );
 
   const processFile = useCallback(

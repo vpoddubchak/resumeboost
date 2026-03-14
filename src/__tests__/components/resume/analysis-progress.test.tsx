@@ -121,7 +121,7 @@ describe('AnalysisProgress', () => {
       expect(screen.getByRole('button', { name: /retry/i })).toBeInTheDocument();
     });
 
-    expect(mockOnError).toHaveBeenCalledWith('AI analysis failed');
+    expect(mockOnError).toHaveBeenCalledWith('AI analysis failed. Please try again.');
   });
 
   it('should retry analysis when Retry button is clicked', async () => {

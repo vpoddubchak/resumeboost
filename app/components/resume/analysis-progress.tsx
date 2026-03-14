@@ -121,7 +121,8 @@ export function AnalysisProgress({
         onComplete(response.data);
       } else {
         setLoading('analysis', false);
-        const errorMessage = response.error?.message || 'Analysis failed. Please try again.';
+        const code = response.error?.code;
+        const errorMessage = code && t.has(`apiErrors.${code}`) ? t(`apiErrors.${code}`) : (response.error?.message || t('errorAnalysisFailed'));
         setError(errorMessage);
         onError(errorMessage);
       }
@@ -129,7 +130,7 @@ export function AnalysisProgress({
       clearProgressTimers();
       if (!isMountedRef.current) return;
       setLoading('analysis', false);
-      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.';
+      const errorMessage = err instanceof Error ? err.message : t('errorUnexpected');
       setError(errorMessage);
       onError(errorMessage);
     }
