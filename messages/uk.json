@@ -5,6 +5,7 @@
       "portfolio": "Портфоліо",
       "successStories": "Історії успіху",
       "analyzeResume": "Аналіз резюме",
+      "consultation": "Консультація",
       "siteNavigation": "Навігація сайтом"
     },
     "actions": {
@@ -66,7 +67,7 @@
     "bookConsultation": "Записатися на консультацію",
     "backToAnalysis": "Повернутися до аналізу",
     "bookConsultationTitle": "Записатися на консультацію",
-    "bookConsultationComingSoon": "Запис на консультацію — з'явиться в Story 3.1",
+    "bookConsultationDescription": "Заплануйте 30-хвилинну сесію з експертом з резюме.",
     "resumeMatchScore": "Оцінка відповідності резюме",
     "strongMatch": "Високий збіг",
     "partialMatch": "Частковий збіг",
@@ -231,6 +232,27 @@
     "featureExpertDescription": "Зв'яжіться з професіоналами для персоналізованих кар'єрних порад.",
     "featureResultsTitle": "Перевірені результати",
     "featureResultsDescription": "Приєднуйтесь до клієнтів, які покращили свої результати пошуку роботи."
+  },
+  "consultation": {
+    "bookingTitle": "Запишіться на консультацію",
+    "bookingDescription": "Заплануйте 30-хвилинну сесію з експертом з резюме для аналізу вашого резюме та створення плану дій.",
+    "bookingNote": "Запис безкоштовний — оплата тільки після консультації.",
+    "metaTitle": "Запис на консультацію | ResumeBoost",
+    "metaDescription": "Заплануйте 30-хвилинну експертну консультацію з резюме з ResumeBoost.",
+    "selectDate": "Оберіть дату",
+    "availableSlots": "Доступний час",
+    "noSlotsAvailable": "Немає доступного часу на цю дату. Спробуйте інший день.",
+    "confirmBooking": "Підтвердити запис",
+    "booking": "Бронювання...",
+    "bookingConfirmed": "Запис підтверджено!",
+    "bookingConfirmedDescription": "Ваша 30-хвилинна консультація запланована на {date} о {time} ({timezone}).",
+    "slotTaken": "Цей час щойно зайняли. Будь ласка, оберіть інший.",
+    "backToResults": "Назад до результатів",
+    "loadingSlots": "Завантаження доступного часу...",
+    "errorLoadingSlots": "Не вдалося завантажити доступний час. Спробуйте ще раз.",
+    "loginRequired": "Будь ласка, увійдіть для запису на консультацію.",
+    "today": "Сьогодні",
+    "tomorrow": "Завтра"
   },
   "languageSwitcher": {
     "en": "EN",

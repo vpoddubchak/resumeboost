@@ -111,14 +111,44 @@ model Consultation {
   consultation_id   Int      @id @default(autoincrement())
   user_id           Int
   consultation_date DateTime
+  duration_minutes  Int      @default(30)
   status            String   @default("scheduled") @db.VarChar(50)
   notes             String?
   created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
 
   // Relations
   user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 
   @@map("consultations")
+}
+
+// Availability rules for consultant scheduling
+model AvailabilityRule {
+  rule_id     Int      @id @default(autoincrement())
+  day_of_week Int      // 0=Sunday, 1=Monday, ..., 6=Saturday
+  start_time  String   // "09:00" (HH:mm in consultant's timezone)
+  end_time    String   // "18:00"
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@unique([day_of_week, start_time])
+  @@map("availability_rules")
+}
+
+// Date overrides for blocking or customizing specific dates
+model DateOverride {
+  override_id Int      @id @default(autoincrement())
+  date        DateTime @db.Date
+  is_blocked  Boolean  @default(true) // true=day off, false=custom hours
+  start_time  String?  // custom hours if is_blocked=false
+  end_time    String?
+  reason      String?  @db.VarChar(255)
+  created_at  DateTime @default(now())
+
+  @@unique([date])
+  @@map("date_overrides")
 }
 
 // Portfolio_content table for examples

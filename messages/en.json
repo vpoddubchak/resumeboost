@@ -5,6 +5,7 @@
       "portfolio": "Portfolio",
       "successStories": "Success Stories",
       "analyzeResume": "Analyze Resume",
+      "consultation": "Consultation",
       "siteNavigation": "Site navigation"
     },
     "actions": {
@@ -66,7 +67,7 @@
     "bookConsultation": "Book a Consultation",
     "backToAnalysis": "Back to Analysis",
     "bookConsultationTitle": "Book a Consultation",
-    "bookConsultationComingSoon": "Consultation booking — coming in Story 3.1",
+    "bookConsultationDescription": "Schedule a 30-minute session with a resume expert.",
     "resumeMatchScore": "Resume Match Score",
     "strongMatch": "Strong Match",
     "partialMatch": "Partial Match",
@@ -231,6 +232,27 @@
     "featureExpertDescription": "Connect with professionals for personalized career guidance.",
     "featureResultsTitle": "Proven Results",
     "featureResultsDescription": "Join clients who improved their job search outcomes."
+  },
+  "consultation": {
+    "bookingTitle": "Book Your Consultation",
+    "bookingDescription": "Schedule a 30-minute session with a resume expert to review your analysis and create an action plan.",
+    "bookingNote": "Free to book — pay only after your consultation.",
+    "metaTitle": "Book Consultation | ResumeBoost",
+    "metaDescription": "Schedule a 30-minute expert resume consultation with ResumeBoost.",
+    "selectDate": "Select a date",
+    "availableSlots": "Available slots",
+    "noSlotsAvailable": "No slots available for this date. Try another day.",
+    "confirmBooking": "Confirm Booking",
+    "booking": "Booking...",
+    "bookingConfirmed": "Booking Confirmed!",
+    "bookingConfirmedDescription": "Your 30-minute consultation is scheduled for {date} at {time} ({timezone}).",
+    "slotTaken": "This slot was just booked. Please select another time.",
+    "backToResults": "Back to Results",
+    "loadingSlots": "Loading available times...",
+    "errorLoadingSlots": "Unable to load available times. Please try again.",
+    "loginRequired": "Please sign in to book a consultation.",
+    "today": "Today",
+    "tomorrow": "Tomorrow"
   },
   "languageSwitcher": {
     "en": "EN",

@@ -14,6 +14,7 @@ import { CategoryBreakdown } from '@/app/components/resume/category-breakdown';
 import type { CategoryScore } from '@/app/components/resume/category-breakdown';
 import type { AnalysisResponseData } from '@/app/components/resume/analysis-progress';
 import type { AnalysisResult } from '@/app/store/types';
+import { BookingPageContent } from '@/app/components/consultation/booking-page-content';
 
 function UploadStep() {
   const t = useTranslations('resume');
@@ -205,12 +206,9 @@ function ReviewStep() {
 }
 
 function CompleteStep() {
-  const t = useTranslations('resume');
+  const setCurrentStep = useUIStore((state) => state.setCurrentStep);
   return (
-    <div className="w-full max-w-2xl mx-auto text-center space-y-4">
-      <h1 className="text-2xl font-bold text-white">{t('bookConsultationTitle')}</h1>
-      <p className="text-base text-gray-400">{t('bookConsultationComingSoon')}</p>
-    </div>
+    <BookingPageContent onBackToResults={() => setCurrentStep(3)} />
   );
 }
 

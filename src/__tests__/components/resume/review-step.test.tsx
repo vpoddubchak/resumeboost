@@ -53,6 +53,15 @@ jest.mock('@/app/components/resume/analysis-progress', () => ({
   AnalysisProgress: () => <div>AnalysisProgress</div>,
 }));
 
+jest.mock('@/app/components/consultation/booking-page-content', () => ({
+  BookingPageContent: ({ onBackToResults }: { onBackToResults?: () => void }) => (
+    <div data-testid="booking-page-content">
+      BookingPageContent
+      {onBackToResults && <button onClick={onBackToResults}>Back to Results</button>}
+    </div>
+  ),
+}));
+
 jest.mock('@/app/components/resume/category-breakdown', () => ({
   CategoryBreakdown: ({ categories }: { categories: Array<{ key: string; label: string; score: number }> }) => (
     <div data-testid="category-breakdown">
