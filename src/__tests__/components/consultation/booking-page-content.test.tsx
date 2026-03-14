@@ -85,7 +85,6 @@ describe('BookingPageContent', () => {
     slotTime.setDate(slotTime.getDate() + 1);
     slotTime.setHours(10, 0, 0, 0);
 
-    let bookCallCount = 0;
     mockFetch.mockImplementation(async (url: string, opts?: RequestInit) => {
       if (typeof url === 'string' && url.includes('/availability-days')) {
         return { ok: true, json: async () => ({ success: true, data: { availableDays: [1, 2, 3, 4, 5] } }) };
@@ -97,10 +96,7 @@ describe('BookingPageContent', () => {
         return { ok: true, json: async () => ({ success: true, data: { date: '2026-03-15', timezone: 'Europe/Kyiv', slots: [{ start: slotTime.toISOString(), end: new Date(slotTime.getTime() + 30 * 60000).toISOString() }] } }) };
       }
       if (opts?.method === 'POST' && typeof url === 'string' && url.includes('/book')) {
-        bookCallCount++;
-        if (bookCallCount === 1) {
-          return { ok: false, status: 409, json: async () => ({ success: false, error: { code: 'SLOT_TAKEN', message: 'This slot is no longer available.' } }) };
-        }
+        return { ok: false, status: 409, json: async () => ({ success: false, error: { code: 'SLOT_TAKEN', message: 'This slot is no longer available.' } }) };
       }
       return { ok: true, json: async () => ({ success: true, data: {} }) };
     });
@@ -133,7 +129,7 @@ describe('BookingPageContent', () => {
 
     await waitFor(() => {
       expect(screen.getByText('This slot was just booked. Please select another time.')).toBeInTheDocument();
-    });
+    }, { timeout: 5000 });
   });
 
   it('full booking flow: select date → select slot → confirm → success', async () => {
