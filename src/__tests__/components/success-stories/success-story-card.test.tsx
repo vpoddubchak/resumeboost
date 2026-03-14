@@ -85,8 +85,10 @@ describe('SuccessStoryCard', () => {
   });
 
   it('renders nothing for metrics when metrics is null', () => {
-    const { container } = render(<SuccessStoryCard item={{ ...baseStory, metrics: null }} />);
-    expect(container.querySelectorAll('[class*="bg-gray-800"]').length).toBe(0);
+    render(<SuccessStoryCard item={{ ...baseStory, metrics: null }} />);
+    expect(screen.queryByText(/↑ Salary/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Interviews/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Time to Offer/)).not.toBeInTheDocument();
   });
 
   it('renders outcome_type badge with formatted label', () => {
@@ -108,8 +110,8 @@ describe('SuccessStoryCard', () => {
   });
 
   it('does not render testimonial section when testimonial_quote is null', () => {
-    render(<SuccessStoryCard item={{ ...baseStory, testimonial_quote: null }} />);
-    expect(screen.queryByRole('blockquote')).not.toBeInTheDocument();
+    const { container } = render(<SuccessStoryCard item={{ ...baseStory, testimonial_quote: null }} />);
+    expect(container.querySelector('blockquote')).not.toBeInTheDocument();
   });
 
   it('does not render client_role when null', () => {

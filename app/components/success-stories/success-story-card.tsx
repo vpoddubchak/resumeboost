@@ -26,7 +26,7 @@ export function SuccessStoryCard({ item }: SuccessStoryCardProps) {
 
   return (
     <article
-      className="group bg-gray-900 rounded-xl border border-gray-800 overflow-hidden transition-all duration-200 hover:border-blue-600/50 hover:shadow-lg hover:shadow-blue-900/20 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
+      className="group bg-gray-900 rounded-xl border border-gray-800 overflow-hidden transition-all duration-200 hover:border-blue-600/50 hover:shadow-lg hover:shadow-blue-900/20"
       aria-label={`Success story: ${item.client_name}${item.client_role ? `, ${item.client_role}` : ''}`}
     >
       <div className="p-4 sm:p-5 flex flex-col gap-4">

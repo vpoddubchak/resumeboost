@@ -117,6 +117,22 @@ describe('/api/success-stories', () => {
       );
     });
 
+    it('should return 200 with combined industry and outcome_type filters', async () => {
+      mockFindMany.mockResolvedValue([mockStories[0]]);
+
+      const { GET } = await import('@/app/api/success-stories/route');
+      const response = await GET(buildRequest('GET', { industry: 'engineering', outcome_type: 'salary-increase' }));
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(body.success).toBe(true);
+      expect(mockFindMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { industry: 'engineering', outcome_type: 'salary-increase' },
+        })
+      );
+    });
+
     it('should query with no where clause when no filters provided', async () => {
       mockFindMany.mockResolvedValue(mockStories);
 

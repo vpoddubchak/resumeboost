@@ -78,7 +78,9 @@ export function SuccessStoriesGallery({ items }: SuccessStoriesGalleryProps) {
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {selectedIndustry === 'all' && selectedOutcome === 'all'
           ? `Showing all ${resultCount} success stories`
-          : `Showing ${resultCount} ${resultCount === 1 ? 'story' : 'stories'} for selected filters`}
+          : resultCount === 0
+            ? 'No stories found. Try selecting a different filter'
+            : `Showing ${resultCount} ${resultCount === 1 ? 'story' : 'stories'} for selected filters`}
       </div>
 
       {/* Gallery grid or filtered empty state */}

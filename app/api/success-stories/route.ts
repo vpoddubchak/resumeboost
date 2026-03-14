@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Prisma } from '@prisma/client';
 import prisma from '@/app/lib/prisma';
 import { logger } from '@/app/lib/logger';
 
@@ -8,7 +9,7 @@ export async function GET(request: NextRequest) {
     const industry = searchParams.get('industry');
     const outcome_type = searchParams.get('outcome_type');
 
-    const where: Record<string, string> = {};
+    const where: Prisma.SuccessStoryWhereInput = {};
     if (industry) where.industry = industry;
     if (outcome_type) where.outcome_type = outcome_type;
 
