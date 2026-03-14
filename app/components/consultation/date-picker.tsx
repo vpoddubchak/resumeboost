@@ -91,7 +91,7 @@ export function DatePicker({ selectedDate, onSelectDate, availableDays }: DatePi
         ref={listRef}
         role="listbox"
         aria-label={t('selectDate')}
-        className="flex gap-2 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-700"
+        className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none"
       >
         {dates.map((date, index) => {
           const available = isAvailable(date);

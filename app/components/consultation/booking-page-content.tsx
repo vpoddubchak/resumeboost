@@ -35,25 +35,42 @@ export function BookingPageContent({ onBackToResults }: BookingPageContentProps)
   const [bookingResult, setBookingResult] = useState<BookingResult | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Fetch available days on mount
+  // Fetch available days and check for existing booking on mount
   useEffect(() => {
-    async function fetchAvailableDays() {
+    async function fetchInitialData() {
       try {
-        const res = await fetch('/api/consultations/availability-days');
-        if (!res.ok) throw new Error('Failed');
-        const json = await res.json();
-        if (json.success) {
-          const days = json.data.availableDays;
-          setAvailableDays(days.length > 0 ? days : [1, 2, 3, 4, 5]);
+        const [daysRes, bookingRes] = await Promise.all([
+          fetch('/api/consultations/availability-days'),
+          fetch('/api/consultations/my-booking'),
+        ]);
+
+        // Available days
+        if (daysRes.ok) {
+          const daysJson = await daysRes.json();
+          if (daysJson.success) {
+            const days = daysJson.data.availableDays;
+            setAvailableDays(days.length > 0 ? days : [1, 2, 3, 4, 5]);
+          }
+        } else {
+          setAvailableDays([1, 2, 3, 4, 5]);
+        }
+
+        // Existing booking
+        if (bookingRes.ok) {
+          const bookingJson = await bookingRes.json();
+          if (bookingJson.success && bookingJson.data.booking) {
+            const b = bookingJson.data.booking;
+            setBookingResult({ date: b.date, time: b.time, timezone: b.timezone });
+            setBookingStatus('confirmed');
+          }
         }
       } catch {
-        // Fallback: Mon-Fri
         setAvailableDays([1, 2, 3, 4, 5]);
       } finally {
         setDaysLoading(false);
       }
     }
-    fetchAvailableDays();
+    fetchInitialData();
   }, []);
 
   // Reset slot when date changes
@@ -76,6 +93,12 @@ export function BookingPageContent({ onBackToResults }: BookingPageContentProps)
       });
 
       const json = await res.json();
+
+      if (res.status === 409 && json.error?.code === 'ALREADY_BOOKED') {
+        setBookingStatus('error');
+        setErrorMessage(t('alreadyBooked'));
+        return;
+      }
 
       if (res.status === 409) {
         setBookingStatus('error');
