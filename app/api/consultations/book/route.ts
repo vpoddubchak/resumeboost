@@ -48,22 +48,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user already has an active booking
-    const userExisting = await prisma.consultation.findFirst({
-      where: {
-        user_id: session.user.userId,
-        status: 'scheduled',
-        consultation_date: { gt: new Date() },
-      },
-    });
-    if (userExisting) {
-      return NextResponse.json(
-        { success: false, error: { code: 'ALREADY_BOOKED', message: 'You already have an active consultation booking.' } },
-        { status: 409 }
-      );
-    }
-
     const booking = await prisma.$transaction(async (tx) => {
+      // Cancel any existing active booking for this user (supports rescheduling)
+      await tx.consultation.updateMany({
+        where: {
+          user_id: session.user.userId,
+          status: 'scheduled',
+          consultation_date: { gt: new Date() },
+        },
+        data: { status: 'cancelled' },
+      });
+
       const existing = await tx.consultation.findFirst({
         where: {
           consultation_date: slotStart,

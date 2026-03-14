@@ -95,12 +95,6 @@ export function BookingPageContent({ onBackToResults }: BookingPageContentProps)
 
       const json = await res.json();
 
-      if (res.status === 409 && json.error?.code === 'ALREADY_BOOKED') {
-        setBookingStatus('error');
-        setErrorMessage(t('alreadyBooked'));
-        return;
-      }
-
       if (res.status === 409) {
         setBookingStatus('error');
         setErrorMessage(t('slotTaken'));

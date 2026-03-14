@@ -48,6 +48,7 @@ describe('/api/consultations/book', () => {
     mockTransaction.mockImplementation(async (fn: Function) => {
       const tx = {
         consultation: {
+          updateMany: jest.fn().mockResolvedValue({ count: 0 }),
           findFirst: jest.fn().mockResolvedValue(null),
           create: jest.fn().mockResolvedValue({
             consultation_id: 1,
@@ -89,6 +90,7 @@ describe('/api/consultations/book', () => {
     mockTransaction.mockImplementation(async (fn: Function) => {
       const tx = {
         consultation: {
+          updateMany: jest.fn().mockResolvedValue({ count: 0 }),
           findFirst: jest.fn().mockResolvedValue({ consultation_id: 99 }),
           create: jest.fn(),
         },
@@ -117,17 +119,37 @@ describe('/api/consultations/book', () => {
     expect(data.error.code).toBe('VALIDATION_ERROR');
   });
 
-  it('returns 409 when user already has an active booking', async () => {
+  it('cancels existing booking when rescheduling', async () => {
     mockAuth.mockResolvedValue({ user: { userId: 42, email: 'test@test.com' } });
-    mockFindFirst.mockResolvedValue({ consultation_id: 99, status: 'scheduled' });
+    const mockUpdateMany = jest.fn().mockResolvedValue({ count: 1 });
+    mockTransaction.mockImplementation(async (fn: Function) => {
+      const tx = {
+        consultation: {
+          updateMany: mockUpdateMany,
+          findFirst: jest.fn().mockResolvedValue(null),
+          create: jest.fn().mockResolvedValue({
+            consultation_id: 2,
+            user_id: 42,
+            consultation_date: new Date(getFutureSlotISO()),
+            duration_minutes: 30,
+            status: 'scheduled',
+          }),
+        },
+      };
+      return fn(tx);
+    });
 
     const { POST } = await import('@/app/api/consultations/book/route');
     const response = await POST(buildRequest({ slotStart: getFutureSlotISO() }));
     const data = await response.json();
 
-    expect(response.status).toBe(409);
-    expect(data.success).toBe(false);
-    expect(data.error.code).toBe('ALREADY_BOOKED');
+    expect(response.status).toBe(201);
+    expect(data.success).toBe(true);
+    expect(data.data.consultationId).toBe(2);
+    expect(mockUpdateMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: expect.objectContaining({ user_id: 42, status: 'scheduled' }),
+      data: { status: 'cancelled' },
+    }));
   });
 
   it('returns 400 for missing slotStart', async () => {
