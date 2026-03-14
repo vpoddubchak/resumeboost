@@ -11,8 +11,12 @@ jest.mock('@/app/lib/auth', () => ({
 
 // Mock Prisma
 const mockTransaction = jest.fn();
+const mockFindFirst = jest.fn();
 jest.mock('@/app/lib/prisma', () => {
   const mockPrisma = {
+    consultation: {
+      findFirst: (...args: any[]) => mockFindFirst(...args),
+    },
     $transaction: (fn: (tx: any) => Promise<any>) => mockTransaction(fn),
   };
   return { __esModule: true, default: mockPrisma };
@@ -40,6 +44,7 @@ describe('/api/consultations/book', () => {
 
   it('successfully books an available slot (auth required)', async () => {
     mockAuth.mockResolvedValue({ user: { userId: 42, email: 'test@test.com' } });
+    mockFindFirst.mockResolvedValue(null); // no existing booking
     mockTransaction.mockImplementation(async (fn: Function) => {
       const tx = {
         consultation: {
@@ -80,6 +85,7 @@ describe('/api/consultations/book', () => {
 
   it('returns 409 for already-booked slot', async () => {
     mockAuth.mockResolvedValue({ user: { userId: 42, email: 'test@test.com' } });
+    mockFindFirst.mockResolvedValue(null); // no existing booking by user
     mockTransaction.mockImplementation(async (fn: Function) => {
       const tx = {
         consultation: {
@@ -109,6 +115,19 @@ describe('/api/consultations/book', () => {
     expect(response.status).toBe(400);
     expect(data.success).toBe(false);
     expect(data.error.code).toBe('VALIDATION_ERROR');
+  });
+
+  it('returns 409 when user already has an active booking', async () => {
+    mockAuth.mockResolvedValue({ user: { userId: 42, email: 'test@test.com' } });
+    mockFindFirst.mockResolvedValue({ consultation_id: 99, status: 'scheduled' });
+
+    const { POST } = await import('@/app/api/consultations/book/route');
+    const response = await POST(buildRequest({ slotStart: getFutureSlotISO() }));
+    const data = await response.json();
+
+    expect(response.status).toBe(409);
+    expect(data.success).toBe(false);
+    expect(data.error.code).toBe('ALREADY_BOOKED');
   });
 
   it('returns 400 for missing slotStart', async () => {

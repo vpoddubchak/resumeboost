@@ -49,14 +49,22 @@ describe('BookingPageContent', () => {
       status: 'authenticated',
     });
 
-    // Mock availability-days fetch
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
-        success: true,
-        data: { availableDays: [1, 2, 3, 4, 5] },
-      }),
-    });
+    // Mock availability-days and my-booking fetches
+    mockFetch
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: { availableDays: [1, 2, 3, 4, 5] },
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: { booking: null },
+        }),
+      });
 
     render(<BookingPageContent />);
 
@@ -81,6 +89,9 @@ describe('BookingPageContent', () => {
     mockFetch.mockImplementation(async (url: string, opts?: RequestInit) => {
       if (typeof url === 'string' && url.includes('/availability-days')) {
         return { ok: true, json: async () => ({ success: true, data: { availableDays: [1, 2, 3, 4, 5] } }) };
+      }
+      if (typeof url === 'string' && url.includes('/my-booking')) {
+        return { ok: true, json: async () => ({ success: true, data: { booking: null } }) };
       }
       if (typeof url === 'string' && url.includes('/slots')) {
         return { ok: true, json: async () => ({ success: true, data: { date: '2026-03-15', timezone: 'Europe/Kyiv', slots: [{ start: slotTime.toISOString(), end: new Date(slotTime.getTime() + 30 * 60000).toISOString() }] } }) };
@@ -139,6 +150,9 @@ describe('BookingPageContent', () => {
     mockFetch.mockImplementation(async (url: string, opts?: RequestInit) => {
       if (typeof url === 'string' && url.includes('/availability-days')) {
         return { ok: true, json: async () => ({ success: true, data: { availableDays: [1, 2, 3, 4, 5] } }) };
+      }
+      if (typeof url === 'string' && url.includes('/my-booking')) {
+        return { ok: true, json: async () => ({ success: true, data: { booking: null } }) };
       }
       if (typeof url === 'string' && url.includes('/slots')) {
         return { ok: true, json: async () => ({ success: true, data: { date: '2026-03-15', timezone: 'Europe/Kyiv', slots: [{ start: slotTime.toISOString(), end: new Date(slotTime.getTime() + 30 * 60000).toISOString() }] } }) };
