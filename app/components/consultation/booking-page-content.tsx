@@ -43,7 +43,8 @@ export function BookingPageContent({ onBackToResults }: BookingPageContentProps)
         if (!res.ok) throw new Error('Failed');
         const json = await res.json();
         if (json.success) {
-          setAvailableDays(json.data.availableDays);
+          const days = json.data.availableDays;
+          setAvailableDays(days.length > 0 ? days : [1, 2, 3, 4, 5]);
         }
       } catch {
         // Fallback: Mon-Fri
