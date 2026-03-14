@@ -10,6 +10,8 @@ import type { ClaudeAnalysisResult } from '@/app/lib/claude';
 import { logger } from '@/app/lib/logger';
 import type { LogContext } from '@/app/lib/logger';
 
+export const maxDuration = 60;
+
 export async function POST(request: Request) {
   try {
     // 1. Auth check

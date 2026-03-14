@@ -49,7 +49,7 @@ const claudeResponseSchema = z.object({
   }).optional(),
 });
 
-const ANALYSIS_TIMEOUT_MS = 35_000; // 35s — 5s buffer above 30s SLA (NFR1)
+const ANALYSIS_TIMEOUT_MS = 60_000; // 60s — increased for slower analyses
 const MODEL = 'claude-sonnet-4-5'; // Cost-optimized: $0.007/analysis vs $0.022 for Opus
 
 // Singleton — do NOT re-instantiate per request
