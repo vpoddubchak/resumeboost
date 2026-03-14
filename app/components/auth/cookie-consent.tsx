@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from 'next-intl';
 
 export interface CookiePreferences {
   necessary: boolean; // Always true, cannot be disabled
@@ -27,6 +28,7 @@ export function getCookiePreferences(): CookiePreferences | null {
 }
 
 export default function CookieConsent() {
+  const t = useTranslations('cookies');
   const [visible, setVisible] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [preferences, setPreferences] = useState<CookiePreferences>(DEFAULT_PREFERENCES);
@@ -65,13 +67,12 @@ export default function CookieConsent() {
           <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
             <div className="flex-1">
               <p className="text-sm text-gray-700">
-                We use cookies to improve your experience. Necessary cookies are always active.
-                You can choose which optional cookies to allow.{" "}
+                {t('message')}{" "}
                 <button
                   onClick={() => setShowSettings(true)}
                   className="text-blue-600 underline hover:text-blue-800"
                 >
-                  Manage preferences
+                  {t('managePreferences')}
                 </button>
               </p>
             </div>
@@ -80,33 +81,33 @@ export default function CookieConsent() {
                 onClick={acceptNecessaryOnly}
                 className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
               >
-                Necessary only
+                {t('necessaryOnly')}
               </button>
               <button
                 onClick={acceptAll}
                 className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
-                Accept all
+                {t('acceptAll')}
               </button>
             </div>
           </div>
         ) : (
           <div className="space-y-4">
-            <h3 className="text-base font-semibold text-gray-900">Cookie Preferences</h3>
+            <h3 className="text-base font-semibold text-gray-900">{t('preferencesTitle')}</h3>
 
             <div className="space-y-3">
               <label className="flex items-center justify-between">
                 <div>
-                  <span className="text-sm font-medium text-gray-700">Necessary</span>
-                  <p className="text-xs text-gray-500">Required for the site to function. Cannot be disabled.</p>
+                  <span className="text-sm font-medium text-gray-700">{t('necessary')}</span>
+                  <p className="text-xs text-gray-500">{t('necessaryDescription')}</p>
                 </div>
                 <input type="checkbox" checked disabled className="h-4 w-4 rounded" />
               </label>
 
               <label className="flex items-center justify-between cursor-pointer">
                 <div>
-                  <span className="text-sm font-medium text-gray-700">Functional</span>
-                  <p className="text-xs text-gray-500">Remember your preferences and settings.</p>
+                  <span className="text-sm font-medium text-gray-700">{t('functional')}</span>
+                  <p className="text-xs text-gray-500">{t('functionalDescription')}</p>
                 </div>
                 <input
                   type="checkbox"
@@ -120,8 +121,8 @@ export default function CookieConsent() {
 
               <label className="flex items-center justify-between cursor-pointer">
                 <div>
-                  <span className="text-sm font-medium text-gray-700">Analytics</span>
-                  <p className="text-xs text-gray-500">Help us understand how you use the site.</p>
+                  <span className="text-sm font-medium text-gray-700">{t('analytics')}</span>
+                  <p className="text-xs text-gray-500">{t('analyticsDescription')}</p>
                 </div>
                 <input
                   type="checkbox"
@@ -139,13 +140,13 @@ export default function CookieConsent() {
                 onClick={() => setShowSettings(false)}
                 className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
               >
-                Back
+                {t('back')}
               </button>
               <button
                 onClick={() => savePreferences(preferences)}
                 className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
-                Save preferences
+                {t('savePreferences')}
               </button>
             </div>
           </div>

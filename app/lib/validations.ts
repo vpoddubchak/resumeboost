@@ -66,6 +66,7 @@ export const userUpdateSchema = z.object({
 export const analyzeRequestSchema = z.object({
   upload_id: z.number().int().positive('Upload ID must be a positive integer'),
   job_description: z.string().min(10, 'Job description too short').max(10000, 'Job description too long'),
+  locale: z.enum(['en', 'uk']).optional().default('en'),
 });
 
 export const ALLOWED_MIME_TYPES = [

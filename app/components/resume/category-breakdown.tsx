@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 export interface CategoryScore {
   key: string;
@@ -120,6 +121,7 @@ function CategoryRow({ category, animated }: CategoryRowProps) {
 }
 
 export function CategoryBreakdown({ categories }: CategoryBreakdownProps) {
+  const t = useTranslations('resume');
   const [animated, setAnimated] = useState(false);
 
   useEffect(() => {
@@ -132,7 +134,7 @@ export function CategoryBreakdown({ categories }: CategoryBreakdownProps) {
       aria-label="Category Breakdown"
       className="bg-gray-900 rounded-xl border border-gray-800 p-4 space-y-2"
     >
-      <h2 className="text-2xl font-bold text-white px-3 pb-2">Category Breakdown</h2>
+      <h2 className="text-2xl font-bold text-white px-3 pb-2">{t('categoryBreakdown')}</h2>
       <div className="space-y-1">
         {categories.map((category) => (
           <CategoryRow key={category.key} category={category} animated={animated} />

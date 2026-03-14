@@ -4,11 +4,18 @@ import '@testing-library/jest-dom';
 import { StepNavigation } from '@/app/components/resume/step-navigation';
 import { useUIStore } from '@/app/store/ui-store';
 
-jest.mock('next/link', () => ({
+jest.mock('@/app/i18n/navigation', () => ({
   __esModule: true,
-  default: ({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) => (
+  Link: ({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) => (
     <a href={href} className={className}>{children}</a>
   ),
+  useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
+  usePathname: () => '/resume-analysis',
+}));
+
+jest.mock('@/app/components/language-switcher', () => ({
+  __esModule: true,
+  LanguageSwitcher: () => <div data-testid="language-switcher" />,
 }));
 
 beforeEach(() => {

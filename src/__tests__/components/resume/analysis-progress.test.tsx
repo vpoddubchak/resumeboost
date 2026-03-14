@@ -71,7 +71,7 @@ describe('AnalysisProgress', () => {
 
     expect(apiClient.post).toHaveBeenCalledWith(
       '/api/analyses/run',
-      { upload_id: 1, job_description: 'Senior React developer with 5 years experience' },
+      { upload_id: 1, job_description: 'Senior React developer with 5 years experience', locale: 'en' },
       expect.objectContaining({ signal: expect.any(AbortSignal) })
     );
   });

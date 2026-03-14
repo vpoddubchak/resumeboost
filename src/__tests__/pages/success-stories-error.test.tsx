@@ -2,14 +2,14 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-jest.mock('next/link', () => ({
+jest.mock('@/app/i18n/navigation', () => ({
   __esModule: true,
-  default: ({ href, children, className, ...props }: { href: string; children: React.ReactNode; className?: string; [key: string]: unknown }) => (
+  Link: ({ href, children, className, ...props }: { href: string; children: React.ReactNode; className?: string; [key: string]: unknown }) => (
     <a href={href} className={className} {...props}>{children}</a>
   ),
 }));
 
-import SuccessStoriesError from '@/app/success-stories/error';
+import SuccessStoriesError from '@/app/[locale]/success-stories/error';
 
 describe('SuccessStoriesError', () => {
   const mockReset = jest.fn();
@@ -26,7 +26,7 @@ describe('SuccessStoriesError', () => {
 
   it('renders error description text', () => {
     render(<SuccessStoriesError error={mockError} reset={mockReset} />);
-    expect(screen.getByText(/couldn.t load success stories/i)).toBeInTheDocument();
+    expect(screen.getByText(/encountered an issue with success stories/i)).toBeInTheDocument();
   });
 
   it('renders Try again button that calls reset', () => {
@@ -39,7 +39,7 @@ describe('SuccessStoriesError', () => {
 
   it('renders Back to Home link pointing to /', () => {
     render(<SuccessStoriesError error={mockError} reset={mockReset} />);
-    const link = screen.getByRole('link', { name: 'Back to Home' });
+    const link = screen.getByRole('link', { name: 'Go back home' });
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('href', '/');
   });
@@ -58,14 +58,14 @@ describe('SuccessStoriesError', () => {
 
   it('Back to Home link has accessible focus-visible styling', () => {
     render(<SuccessStoriesError error={mockError} reset={mockReset} />);
-    const link = screen.getByRole('link', { name: 'Back to Home' });
+    const link = screen.getByRole('link', { name: 'Go back home' });
     expect(link.className).toContain('focus-visible:ring-2');
   });
 
   it('both interactive elements have min 44px touch targets', () => {
     const { container } = render(<SuccessStoriesError error={mockError} reset={mockReset} />);
     const btn = screen.getByRole('button', { name: 'Try again' });
-    const link = screen.getByRole('link', { name: 'Back to Home' });
+    const link = screen.getByRole('link', { name: 'Go back home' });
     expect(btn.className).toContain('min-h-[44px]');
     expect(link.className).toContain('min-h-[44px]');
   });

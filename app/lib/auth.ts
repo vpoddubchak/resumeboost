@@ -231,8 +231,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     updateAge: 24 * 60 * 60, // Refresh token every 24 hours
   },
   pages: {
-    signIn: "/login",
-    error: "/login",
+    signIn: "/en/login",
+    error: "/en/login",
   },
   providers,
   callbacks: {
@@ -252,10 +252,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     authorized({ auth: sessionAuth, request }) {
       const { pathname } = request.nextUrl;
-      const isAdmin = pathname.startsWith("/admin");
+      // Strip locale prefix (e.g., /en/admin -> /admin, /uk/resume-analysis -> /resume-analysis)
+      const pathWithoutLocale = pathname.replace(/^\/(en|uk)/, '') || '/';
+      const isAdmin = pathWithoutLocale.startsWith("/admin");
       const isProtected =
-        pathname.startsWith("/dashboard") ||
-        pathname.startsWith("/resume-analysis");
+        pathWithoutLocale.startsWith("/dashboard") ||
+        pathWithoutLocale.startsWith("/resume-analysis");
 
       if (isAdmin) {
         return sessionAuth?.user?.role === "admin";

@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 interface PortfolioFilterProps {
   options: string[];
   selected: string;
@@ -7,11 +9,14 @@ interface PortfolioFilterProps {
 }
 
 export function PortfolioFilter({ options, selected, onChange }: PortfolioFilterProps) {
+  const t = useTranslations('portfolio');
+  const tc = useTranslations('common');
+
   return (
-    <div role="group" aria-label="Filter by industry" className="flex flex-wrap gap-2">
+    <div role="group" aria-label={t('filterByIndustry')} className="flex flex-wrap gap-2">
       {['all', ...options].map((option) => {
         const isSelected = selected === option;
-        const label = option === 'all' ? 'All' : option.charAt(0).toUpperCase() + option.slice(1);
+        const label = option === 'all' ? tc('all') : option.charAt(0).toUpperCase() + option.slice(1);
 
         return (
           <button

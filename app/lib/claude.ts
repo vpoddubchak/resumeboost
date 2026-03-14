@@ -59,7 +59,8 @@ const anthropic = new Anthropic({
 
 export async function analyzeResume(
   resumeText: string,
-  jobDescription: string
+  jobDescription: string,
+  locale: string = 'en'
 ): Promise<ClaudeAnalysisResult> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), ANALYSIS_TIMEOUT_MS);
@@ -74,7 +75,7 @@ export async function analyzeResume(
             messages: [
               {
                 role: 'user',
-                content: buildPrompt(resumeText, jobDescription),
+                content: buildPrompt(resumeText, jobDescription, locale),
               },
             ],
           },
@@ -109,8 +110,12 @@ export async function analyzeResume(
   }
 }
 
-function buildPrompt(resumeText: string, jobDescription: string): string {
-  return `You are an expert resume analyst. Analyze the resume against the job description and return ONLY valid JSON.
+function buildPrompt(resumeText: string, jobDescription: string, locale: string): string {
+  const langInstruction = locale === 'uk'
+    ? '\nIMPORTANT: Write ALL text values (strengths, weaknesses, recommendations, analysis) in Ukrainian (українською мовою). JSON keys must remain in English.'
+    : '';
+
+  return `You are an expert resume analyst. Analyze the resume against the job description and return ONLY valid JSON.${langInstruction}
 
 RESUME:
 ${resumeText}

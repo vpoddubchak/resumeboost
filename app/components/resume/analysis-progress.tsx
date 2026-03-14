@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
 import { LoadingSpinner } from '@/app/components/ui/loading-spinner';
 import { useUIStore } from '@/app/store/ui-store';
 import { apiClient } from '@/app/lib/api-client';
@@ -20,20 +22,20 @@ interface AnalysisProgressProps {
   jobDescription: string;
 }
 
-const STAGES = [
-  { label: 'Retrieving your resume...', threshold: 25 },
-  { label: 'Extracting document content...', threshold: 50 },
-  { label: 'Analyzing with AI — this takes ~20 seconds...', threshold: 90 },
-  { label: 'Saving your results...', threshold: 100 },
+const STAGE_KEYS = [
+  { key: 'stageRetrieving', threshold: 25 },
+  { key: 'stageExtracting', threshold: 50 },
+  { key: 'stageAnalyzing', threshold: 90 },
+  { key: 'stageSaving', threshold: 100 },
 ] as const;
 
-function getStageLabel(progress: number): string {
-  for (const stage of STAGES) {
+function getStageKey(progress: number): string {
+  for (const stage of STAGE_KEYS) {
     if (progress <= stage.threshold) {
-      return stage.label;
+      return stage.key;
     }
   }
-  return STAGES[STAGES.length - 1].label;
+  return STAGE_KEYS[STAGE_KEYS.length - 1].key;
 }
 
 export function AnalysisProgress({
@@ -42,6 +44,8 @@ export function AnalysisProgress({
   uploadId,
   jobDescription,
 }: AnalysisProgressProps) {
+  const t = useTranslations('resume');
+  const locale = useLocale();
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [isRetrying, setIsRetrying] = useState(false);
@@ -104,7 +108,7 @@ export function AnalysisProgress({
     try {
       const response = await apiClient.post<AnalysisResponseData>(
         '/api/analyses/run',
-        { upload_id: uploadId, job_description: jobDescription },
+        { upload_id: uploadId, job_description: jobDescription, locale },
         { signal: abortControllerRef.current.signal }
       );
 
@@ -150,7 +154,7 @@ export function AnalysisProgress({
     });
   }, [triggerAnalysis]);
 
-  const stageLabel = getStageLabel(progress);
+  const stageLabel = t(getStageKey(progress));
 
   if (error) {
     return (
@@ -161,8 +165,8 @@ export function AnalysisProgress({
           </svg>
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-white">Something went wrong</h2>
-          <p className="text-base text-gray-400 mt-2">Please try again.</p>
+          <h2 className="text-2xl font-bold text-white">{t('somethingWentWrong')}</h2>
+          <p className="text-base text-gray-400 mt-2">{t('pleaseTryAgain')}</p>
         </div>
         <button
           onClick={handleRetry}
@@ -170,7 +174,7 @@ export function AnalysisProgress({
           className="mx-auto min-h-[48px] px-8 py-3 rounded-xl font-semibold text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-blue-500/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Retry analysis"
         >
-          {isRetrying ? 'Retrying...' : 'Retry'}
+          {isRetrying ? t('retrying') : t('retry')}
         </button>
       </div>
     );
@@ -179,7 +183,7 @@ export function AnalysisProgress({
   return (
     <div className="w-full max-w-2xl mx-auto text-center space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Analyzing Your Resume</h1>
+        <h1 className="text-2xl font-bold text-white">{t('analyzingTitle')}</h1>
         <p className="text-base text-gray-400 mt-1" aria-live="polite">
           {stageLabel}
         </p>
@@ -198,7 +202,7 @@ export function AnalysisProgress({
       </div>
 
       <p className="text-sm text-gray-500" aria-live="polite">
-        {progress < 100 ? `${progress}% complete` : 'Analysis complete!'}
+        {progress < 100 ? t('percentComplete', { progress }) : t('analysisComplete')}
       </p>
     </div>
   );

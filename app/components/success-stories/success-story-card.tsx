@@ -1,22 +1,21 @@
+'use client';
+
 import type { SuccessStory } from '@prisma/client';
 import { Prisma } from '@prisma/client';
+import { useTranslations } from 'next-intl';
 
 function isMetricsObject(v: Prisma.JsonValue): v is Record<string, string | number> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);
 }
 
-const METRIC_LABELS: Record<string, string> = {
-  salaryIncrease: '↑ Salary',
-  interviewsSecured: 'Interviews',
-  timeToOffer: 'Time to Offer',
-  responseRateImprovement: '↑ Response Rate',
-};
 
 interface SuccessStoryCardProps {
   item: SuccessStory;
 }
 
 export function SuccessStoryCard({ item }: SuccessStoryCardProps) {
+  const t = useTranslations('stories');
+  const tc = useTranslations('common');
   const metricsObj = item.metrics && isMetricsObject(item.metrics) ? item.metrics : null;
 
   const outcomeLabel = item.outcome_type
@@ -41,7 +40,7 @@ export function SuccessStoryCard({ item }: SuccessStoryCardProps) {
           <div className="flex flex-col items-end gap-1 shrink-0">
             {item.is_featured && (
               <span className="px-2 py-0.5 bg-yellow-500 text-yellow-950 text-xs font-bold rounded-full">
-                Featured
+                {tc('featured')}
               </span>
             )}
           </div>
@@ -70,15 +69,15 @@ export function SuccessStoryCard({ item }: SuccessStoryCardProps) {
         {/* Challenge / Solution / Results */}
         <div className="space-y-3">
           <div>
-            <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Challenge</p>
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t('challenge')}</p>
             <p className="text-sm text-gray-300 leading-relaxed line-clamp-2">{item.challenge}</p>
           </div>
           <div>
-            <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Solution</p>
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t('solution')}</p>
             <p className="text-sm text-gray-300 leading-relaxed line-clamp-2">{item.solution}</p>
           </div>
           <div>
-            <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Results</p>
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t('results')}</p>
             <p className="text-sm text-gray-300 leading-relaxed line-clamp-2">{item.results}</p>
           </div>
         </div>
@@ -91,7 +90,7 @@ export function SuccessStoryCard({ item }: SuccessStoryCardProps) {
                 key={key}
                 className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-800 text-gray-300 border border-gray-700"
               >
-                {METRIC_LABELS[key] ?? key}: {String(val)}
+                {t.has(`metricLabels.${key}`) ? t(`metricLabels.${key}`) : key}: {String(val)}
               </span>
             ))}
           </div>

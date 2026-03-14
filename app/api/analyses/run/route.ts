@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { upload_id, job_description } = validation.data;
+    const { upload_id, job_description, locale } = validation.data;
 
     // 4. Look up upload record (IDOR protection: filter by BOTH upload_id AND user_id)
     const upload = await prisma.upload.findFirst({
@@ -110,7 +110,7 @@ export async function POST(request: Request) {
     // 7. Call Claude API for analysis
     let analysisResult: ClaudeAnalysisResult;
     try {
-      analysisResult = await analyzeResume(resumeText, job_description);
+      analysisResult = await analyzeResume(resumeText, job_description, locale);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       const isTimeout = error instanceof Error && (error.name === 'AbortError' || message.toLowerCase().includes('abort') || message.toLowerCase().includes('timeout'));

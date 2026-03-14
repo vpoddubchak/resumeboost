@@ -1,14 +1,16 @@
 'use client';
 
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/app/i18n/navigation';
 import { useUIStore } from '@/app/store/ui-store';
+import { LanguageSwitcher } from '@/app/components/language-switcher';
 import type { StepKey, StepNumber } from '@/app/store/types';
 
-const STEPS: { key: StepKey; label: string; number: StepNumber }[] = [
-  { key: 'upload', label: 'Upload', number: 1 },
-  { key: 'analysis', label: 'Analysis', number: 2 },
-  { key: 'review', label: 'Review', number: 3 },
-  { key: 'complete', label: 'Complete', number: 4 },
+const STEP_KEYS: { key: StepKey; translationKey: string; number: StepNumber }[] = [
+  { key: 'upload', translationKey: 'upload', number: 1 },
+  { key: 'analysis', translationKey: 'analysis', number: 2 },
+  { key: 'review', translationKey: 'review', number: 3 },
+  { key: 'complete', translationKey: 'complete', number: 4 },
 ];
 
 function CheckIcon() {
@@ -24,6 +26,8 @@ function CheckIcon() {
 }
 
 export function StepNavigation() {
+  const t = useTranslations('resume.steps');
+  const tc = useTranslations('common');
   const steps = useUIStore((state) => state.steps);
   const setCurrentStep = useUIStore((state) => state.setCurrentStep);
 
@@ -36,23 +40,23 @@ export function StepNavigation() {
   return (
     <header className="flex items-center justify-between px-4 sm:px-6 py-3 bg-gray-900 border-b border-gray-800">
       <div className="flex items-center gap-4 shrink-0">
-        <span className="text-white font-bold text-lg">ResumeBoost</span>
+        <span className="text-white font-bold text-lg">{tc('appName')}</span>
         <Link
           href="/portfolio"
           className="text-sm text-gray-400 hover:text-blue-400 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none rounded px-1"
         >
-          Portfolio
+          {tc('navigation.portfolio')}
         </Link>
         <Link
           href="/success-stories"
           className="text-sm text-gray-400 hover:text-blue-400 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none rounded px-1"
         >
-          Success Stories
+          {tc('navigation.successStories')}
         </Link>
       </div>
 
-      <nav className="flex items-center gap-0.5 sm:gap-1" aria-label="Progress steps">
-        {STEPS.map((step, index) => {
+      <nav className="flex items-center gap-0.5 sm:gap-1" aria-label={t('progressSteps')}>
+        {STEP_KEYS.map((step, index) => {
           const status = steps[step.key];
           const isActive = status === 'active';
           const isCompleted = status === 'completed';
@@ -65,7 +69,7 @@ export function StepNavigation() {
                 disabled={isDisabled}
                 aria-current={isActive ? 'step' : undefined}
                 aria-disabled={isDisabled}
-                aria-label={`Step ${step.number}: ${step.label}${isCompleted ? ' (completed)' : isActive ? ' (current)' : ' (not yet available)'}`}
+                aria-label={`Step ${step.number}: ${t(step.translationKey)}${isCompleted ? ` (${t('completed')})` : isActive ? ` (${t('current')})` : ` (${t('notYetAvailable')})`}`}
                 className={[
                   'flex items-center gap-1.5 px-2 sm:px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                   'min-h-[44px] min-w-[44px] justify-center sm:justify-start',
@@ -84,10 +88,10 @@ export function StepNavigation() {
                 >
                   {isCompleted ? <CheckIcon /> : step.number}
                 </span>
-                <span className="hidden sm:inline">{step.label}</span>
+                <span className="hidden sm:inline">{t(step.translationKey)}</span>
               </button>
 
-              {index < STEPS.length - 1 && (
+              {index < STEP_KEYS.length - 1 && (
                 <div
                   className={`w-4 sm:w-6 h-0.5 mx-0.5 sm:mx-1 ${isCompleted ? 'bg-blue-500' : 'bg-gray-700'}`}
                   aria-hidden="true"
@@ -97,6 +101,8 @@ export function StepNavigation() {
           );
         })}
       </nav>
+
+      <LanguageSwitcher />
     </header>
   );
 }

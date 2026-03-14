@@ -1,12 +1,17 @@
+'use client';
+
 import type { PortfolioContent } from '@prisma/client';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/app/i18n/navigation';
 
 interface PortfolioCardProps {
   item: PortfolioContent;
 }
 
 export function PortfolioCard({ item }: PortfolioCardProps) {
+  const tc = useTranslations('common');
+
   return (
     <Link
       href={`/portfolio/${item.content_id}`}
@@ -45,7 +50,7 @@ export function PortfolioCard({ item }: PortfolioCardProps) {
         )}
         {item.is_featured && (
           <span className="absolute top-2 right-2 px-2 py-0.5 bg-yellow-500 text-yellow-950 text-xs font-bold rounded-full">
-            Featured
+            {tc('featured')}
           </span>
         )}
       </div>
@@ -66,7 +71,7 @@ export function PortfolioCard({ item }: PortfolioCardProps) {
         {item.description != null && item.description.length > 0 && (
           <div className="space-y-1">
             <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-              Key Improvements
+              {tc('keyImprovements')}
             </p>
             <p className="text-sm text-gray-300 leading-relaxed line-clamp-3">
               {item.description}

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useResumeStore, selectUploadProgress, selectUploadStatus, selectSelectedFile, selectUploadError } from '@/app/store/resume-store';
 import { LoadingSpinner } from '@/app/components/ui/loading-spinner';
 
@@ -10,6 +11,7 @@ function formatFileSize(bytes: number): string {
 }
 
 export function UploadProgress() {
+  const t = useTranslations('resume');
   const uploadStatus = useResumeStore(selectUploadStatus);
   const uploadProgress = useResumeStore(selectUploadProgress);
   const selectedFile = useResumeStore(selectSelectedFile);
@@ -37,14 +39,14 @@ export function UploadProgress() {
               </svg>
             </div>
           )}
-          {uploadStatus === 'uploading' && <LoadingSpinner size="sm" label="Uploading..." />}
+          {uploadStatus === 'uploading' && <LoadingSpinner size="sm" label={t('uploading')} />}
         </div>
       )}
 
       {uploadStatus === 'uploading' && (
         <div role="progressbar" aria-valuenow={uploadProgress} aria-valuemin={0} aria-valuemax={100} aria-label={`Upload progress: ${uploadProgress}%`}>
           <div className="flex justify-between text-xs text-gray-400 mb-1">
-            <span>Uploading...</span>
+            <span>{t('uploading')}</span>
             <span>{uploadProgress}%</span>
           </div>
           <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
@@ -61,7 +63,7 @@ export function UploadProgress() {
           <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
           </svg>
-          Resume uploaded successfully
+          {t('resumeUploadedSuccessfully')}
         </p>
       )}
 

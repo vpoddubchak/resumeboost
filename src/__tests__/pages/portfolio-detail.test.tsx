@@ -16,11 +16,16 @@ jest.mock('next/image', () => ({
   ),
 }));
 
-jest.mock('next/link', () => ({
+jest.mock('@/app/i18n/navigation', () => ({
   __esModule: true,
-  default: ({ href, children, className, ...props }: { href: string; children: React.ReactNode; className?: string; [key: string]: unknown }) => (
+  Link: ({ href, children, className, ...props }: { href: string; children: React.ReactNode; className?: string; [key: string]: unknown }) => (
     <a href={href} className={className} {...props}>{children}</a>
   ),
+}));
+
+jest.mock('@/app/components/language-switcher', () => ({
+  __esModule: true,
+  LanguageSwitcher: () => <div data-testid="language-switcher" />,
 }));
 
 const mockNotFound = jest.fn();
@@ -38,7 +43,7 @@ jest.mock('@/app/lib/prisma', () => ({
   },
 }));
 
-import CaseStudyPage from '@/app/portfolio/[id]/page';
+import CaseStudyPage from '@/app/[locale]/portfolio/[id]/page';
 import type { PortfolioContent } from '@prisma/client';
 
 const sampleItem: PortfolioContent = {

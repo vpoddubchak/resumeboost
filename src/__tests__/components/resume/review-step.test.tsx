@@ -65,7 +65,7 @@ jest.mock('@/app/components/resume/category-breakdown', () => ({
   ),
 }));
 
-import ResumeAnalysisPage from '@/app/resume-analysis/page';
+import ResumeAnalysisPage from '@/app/[locale]/resume-analysis/page';
 
 describe('ReviewStep (via ResumeAnalysisPage at step 3)', () => {
   beforeEach(() => {

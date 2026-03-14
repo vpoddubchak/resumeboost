@@ -12,9 +12,9 @@ jest.mock('next/image', () => ({
   ),
 }));
 
-jest.mock('next/link', () => ({
+jest.mock('@/app/i18n/navigation', () => ({
   __esModule: true,
-  default: ({ href, children, className, ...props }: { href: string; children: React.ReactNode; className?: string; [key: string]: unknown }) => (
+  Link: ({ href, children, className, ...props }: { href: string; children: React.ReactNode; className?: string; [key: string]: unknown }) => (
     <a href={href} className={className} {...props}>{children}</a>
   ),
 }));

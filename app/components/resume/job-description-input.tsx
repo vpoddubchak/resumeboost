@@ -1,8 +1,10 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useResumeStore, selectJobDescription } from '@/app/store/resume-store';
 
 export function JobDescriptionInput() {
+  const t = useTranslations('resume');
   const jobDescription = useResumeStore(selectJobDescription);
   const setJobDescription = useResumeStore((state) => state.setJobDescription);
 
@@ -13,7 +15,7 @@ export function JobDescriptionInput() {
   return (
     <div className="space-y-2">
       <label htmlFor="job-description" className="block text-sm font-medium text-gray-300">
-        Job Description <span className="text-red-400">*</span>
+        {t('jobDescriptionLabel')} <span className="text-red-400">*</span>
       </label>
       <textarea
         id="job-description"
@@ -21,7 +23,7 @@ export function JobDescriptionInput() {
         rows={6}
         value={jobDescription}
         onChange={(e) => setJobDescription(e.target.value)}
-        placeholder="Paste the job description here (minimum 10 characters)..."
+        placeholder={t('jobDescriptionPlaceholder')}
         maxLength={MAX_CHARS}
         className={[
           'w-full px-4 py-3 bg-gray-800 border rounded-lg text-white placeholder-gray-500',
@@ -37,8 +39,8 @@ export function JobDescriptionInput() {
       <div className="flex justify-between items-center">
         <p id="job-description-hint" className="text-xs text-gray-500">
           {charCount > 0 && charCount < MIN_CHARS
-            ? `At least ${MIN_CHARS} characters required`
-            : 'Enter the full job description for accurate analysis'}
+            ? t('jobDescriptionMinChars', { min: MIN_CHARS })
+            : t('jobDescriptionHint')}
         </p>
         <p
           id="job-description-count"

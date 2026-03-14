@@ -2,10 +2,14 @@
 
 import { useState, FormEvent } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useRouter } from '@/app/i18n/navigation';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/app/i18n/navigation';
+import { LanguageSwitcher } from '@/app/components/language-switcher';
 
 export default function RegisterPage() {
+  const t = useTranslations('register');
+  const tc = useTranslations('common');
   const router = useRouter();
 
   const [firstName, setFirstName] = useState('');
@@ -21,12 +25,12 @@ export default function RegisterPage() {
     setError('');
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('passwordMismatch'));
       return;
     }
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+      setError(t('passwordTooShort'));
       return;
     }
 
@@ -42,7 +46,7 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (!data.success) {
-        setError(data.error?.message || 'Registration failed');
+        setError(data.error?.message || t('registrationFailed'));
         return;
       }
 
@@ -59,20 +63,23 @@ export default function RegisterPage() {
         router.refresh();
       }
     } catch {
-      setError('Something went wrong. Please try again.');
+      setError(t('genericError'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-950 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-950 px-4 relative">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-            ResumeBoost
+            {tc('appName')}
           </h1>
-          <p className="mt-2 text-gray-400">Create your account</p>
+          <p className="mt-2 text-gray-400">{t('title')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5 bg-gray-900 p-8 rounded-xl border border-gray-800">
@@ -85,7 +92,7 @@ export default function RegisterPage() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="firstName" className="block text-sm font-medium text-gray-300">
-                First name
+                {t('firstName')}
               </label>
               <input
                 id="firstName"
@@ -100,7 +107,7 @@ export default function RegisterPage() {
             </div>
             <div>
               <label htmlFor="lastName" className="block text-sm font-medium text-gray-300">
-                Last name
+                {t('lastName')}
               </label>
               <input
                 id="lastName"
@@ -117,7 +124,7 @@ export default function RegisterPage() {
 
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-              Email
+              {t('emailLabel')}
             </label>
             <input
               id="email"
@@ -134,7 +141,7 @@ export default function RegisterPage() {
 
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-300">
-              Password
+              {t('passwordLabel')}
             </label>
             <input
               id="password"
@@ -147,12 +154,12 @@ export default function RegisterPage() {
               className="mt-1 block w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors"
               placeholder="••••••••"
             />
-            <p className="mt-1 text-xs text-gray-500">At least 8 characters</p>
+            <p className="mt-1 text-xs text-gray-500">{t('passwordHint')}</p>
           </div>
 
           <div>
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300">
-              Confirm password
+              {t('confirmPassword')}
             </label>
             <input
               id="confirmPassword"
@@ -172,7 +179,7 @@ export default function RegisterPage() {
             disabled={loading}
             className="w-full py-3 px-4 rounded-lg font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
-            {loading ? 'Creating account...' : 'Create account'}
+            {loading ? t('creatingAccount') : t('createAccount')}
           </button>
 
           <div className="relative">
@@ -180,7 +187,7 @@ export default function RegisterPage() {
               <div className="w-full border-t border-gray-700" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-gray-900 px-2 text-gray-500">or</span>
+              <span className="bg-gray-900 px-2 text-gray-500">{t('or')}</span>
             </div>
           </div>
 
@@ -195,14 +202,14 @@ export default function RegisterPage() {
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
             </svg>
-            Continue with Google
+            {t('continueWithGoogle')}
           </button>
         </form>
 
         <p className="text-center text-sm text-gray-500">
-          Already have an account?{' '}
+          {t('haveAccount')}{' '}
           <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
-            Sign in
+            {t('signIn')}
           </Link>
         </p>
       </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { useUIStore, selectCurrentStep } from '@/app/store/ui-store';
 import { useResumeStore, selectUploadStatus, selectJobDescription, selectAnalysisResult } from '@/app/store/resume-store';
 import { StepNavigation } from '@/app/components/resume/step-navigation';
@@ -15,6 +16,7 @@ import type { AnalysisResponseData } from '@/app/components/resume/analysis-prog
 import type { AnalysisResult } from '@/app/store/types';
 
 function UploadStep() {
+  const t = useTranslations('resume');
   const uploadStatus = useResumeStore(selectUploadStatus);
   const jobDescription = useResumeStore(selectJobDescription);
   const goToNextStep = useUIStore((state) => state.goToNextStep);
@@ -30,9 +32,9 @@ function UploadStep() {
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Upload Your Resume</h1>
+        <h1 className="text-2xl font-bold text-white">{t('uploadTitle')}</h1>
         <p className="text-base text-gray-400 mt-1">
-          Upload your resume and paste the job description to get personalized AI analysis
+          {t('uploadDescription')}
         </p>
       </div>
 
@@ -55,16 +57,16 @@ function UploadStep() {
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
         </svg>
-        Analyze Resume
+        {t('analyzeResume')}
       </button>
 
       {!isReadyToAnalyze && (
         <p className="text-center text-xs text-gray-500" aria-live="polite">
           {uploadStatus !== 'uploaded' && jobDescription.trim().length === 0
-            ? 'Upload your resume and enter job description to continue'
+            ? t('uploadBothRequired')
             : uploadStatus !== 'uploaded'
-            ? 'Waiting for resume upload to complete...'
-            : 'Enter a job description to continue'}
+            ? t('waitingForUpload')
+            : t('enterJobDescription')}
         </p>
       )}
     </div>
@@ -72,6 +74,7 @@ function UploadStep() {
 }
 
 function AnalysisStep() {
+  const t = useTranslations('resume');
   const uploadId = useResumeStore((state) => state.upload.uploadId);
   const jobDescription = useResumeStore(selectJobDescription);
   const setAnalysisResult = useResumeStore((state) => state.setAnalysisResult);
@@ -81,13 +84,13 @@ function AnalysisStep() {
   if (!uploadId) {
     return (
       <div className="w-full max-w-2xl mx-auto text-center space-y-4">
-        <h1 className="text-2xl font-bold text-white">Missing Upload</h1>
-        <p className="text-base text-gray-400">Please upload your resume first before running analysis.</p>
+        <h1 className="text-2xl font-bold text-white">{t('missingUploadTitle')}</h1>
+        <p className="text-base text-gray-400">{t('missingUploadDescription')}</p>
         <button
           onClick={() => useUIStore.getState().setCurrentStep(1)}
           className="mx-auto min-h-[48px] px-8 py-3 rounded-xl font-semibold text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg transition-all duration-200"
         >
-          Go Back to Upload
+          {t('goBackToUpload')}
         </button>
       </div>
     );
@@ -121,6 +124,7 @@ function AnalysisStep() {
 }
 
 function ReviewStep() {
+  const t = useTranslations('resume');
   const analysis = useResumeStore(selectAnalysisResult);
   const goToNextStep = useUIStore((state) => state.goToNextStep);
   const setCurrentStep = useUIStore((state) => state.setCurrentStep);
@@ -128,13 +132,13 @@ function ReviewStep() {
   if (!analysis) {
     return (
       <div className="w-full max-w-2xl mx-auto text-center space-y-4" role="alert">
-        <h1 className="text-2xl font-bold text-white">Missing Analysis</h1>
-        <p className="text-base text-gray-400">Please upload your resume and run the analysis first.</p>
+        <h1 className="text-2xl font-bold text-white">{t('missingAnalysisTitle')}</h1>
+        <p className="text-base text-gray-400">{t('missingAnalysisDescription')}</p>
         <button
           onClick={() => setCurrentStep(1)}
           className="mx-auto min-h-[48px] px-8 py-3 rounded-xl font-semibold text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 focus-visible:outline-none"
         >
-          Go Back to Upload
+          {t('goBackToUpload')}
         </button>
       </div>
     );
@@ -165,9 +169,9 @@ function ReviewStep() {
     const qualifications = cb?.qualifications ?? { ...defaultItem, score: legacy?.qualifications ?? 0 };
 
     return [
-      { key: 'skills', label: 'Skills Match', ...skills },
-      { key: 'experience', label: 'Experience Match', ...experience },
-      { key: 'qualifications', label: 'Qualifications Match', ...qualifications },
+      { key: 'skills', label: t('skillsMatch'), ...skills },
+      { key: 'experience', label: t('experienceMatch'), ...experience },
+      { key: 'qualifications', label: t('qualificationsMatch'), ...qualifications },
     ] satisfies CategoryScore[];
   // eslint-disable-next-line react-hooks/exhaustive-deps -- data ref is stable from Zustand store
   }, [analysis.analysisData]);
@@ -187,13 +191,13 @@ function ReviewStep() {
           onClick={() => goToNextStep()}
           className="w-full min-h-[48px] py-3 px-6 rounded-xl font-semibold text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-blue-500/25 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 focus-visible:outline-none"
         >
-          Book a Consultation
+          {t('bookConsultation')}
         </button>
         <button
           onClick={() => setCurrentStep(2)}
           className="w-full min-h-[48px] py-3 px-6 rounded-xl font-semibold text-base bg-gray-800 hover:bg-gray-700 text-gray-300 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 focus-visible:outline-none"
         >
-          Back to Analysis
+          {t('backToAnalysis')}
         </button>
       </div>
     </div>
@@ -201,10 +205,11 @@ function ReviewStep() {
 }
 
 function CompleteStep() {
+  const t = useTranslations('resume');
   return (
     <div className="w-full max-w-2xl mx-auto text-center space-y-4">
-      <h1 className="text-2xl font-bold text-white">Book a Consultation</h1>
-      <p className="text-base text-gray-400">Consultation booking — coming in Story 3.1</p>
+      <h1 className="text-2xl font-bold text-white">{t('bookConsultationTitle')}</h1>
+      <p className="text-base text-gray-400">{t('bookConsultationComingSoon')}</p>
     </div>
   );
 }

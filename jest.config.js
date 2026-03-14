@@ -14,6 +14,9 @@ module.exports = {
   ],
   moduleNameMapper: {
     '^@prisma/client$': '<rootDir>/node_modules/@prisma/client',
+    '^next-intl$': '<rootDir>/src/__tests__/config/next-intl-mock.tsx',
+    '^next-intl/server$': '<rootDir>/src/__tests__/config/next-intl-server-mock.ts',
+    '^next-intl/routing$': '<rootDir>/src/__tests__/config/next-intl-routing-mock.ts',
     '^@/(.*)$': '<rootDir>/$1'
   }
 };

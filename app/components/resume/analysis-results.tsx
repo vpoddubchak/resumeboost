@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { ScoreRing } from '@/app/components/ui/score-ring';
 
 interface AnalysisResultsProps {
@@ -16,10 +17,10 @@ const SCORE_THRESHOLDS = {
   MEDIUM: 50,
 } as const;
 
-function getScoreLabel(score: number): string {
-  if (score >= SCORE_THRESHOLDS.HIGH) return 'Strong Match';
-  if (score >= SCORE_THRESHOLDS.MEDIUM) return 'Partial Match';
-  return 'Low Match';
+function getScoreLabelKey(score: number): string {
+  if (score >= SCORE_THRESHOLDS.HIGH) return 'strongMatch';
+  if (score >= SCORE_THRESHOLDS.MEDIUM) return 'partialMatch';
+  return 'lowMatch';
 }
 
 function getScoreLabelClass(score: number): string {
@@ -75,7 +76,8 @@ export function AnalysisResults({
   recommendations,
   categoryBreakdown,
 }: AnalysisResultsProps) {
-  const scoreLabel = getScoreLabel(matchScore);
+  const t = useTranslations('resume');
+  const scoreLabel = t(getScoreLabelKey(matchScore));
   const scoreLabelClass = getScoreLabelClass(matchScore);
 
   return (
@@ -83,7 +85,7 @@ export function AnalysisResults({
       {/* Score Section */}
       <section className="bg-gray-900 rounded-xl border border-gray-800 p-6 flex flex-col items-center gap-3" aria-live="polite">
         <h2 className="text-2xl font-bold text-white" aria-label="Match score section">
-          Resume Match Score
+          {t('resumeMatchScore')}
         </h2>
         <ScoreRing score={matchScore} size="lg" className="hidden sm:inline-flex" />
         <ScoreRing score={matchScore} size="md" className="sm:hidden" />
@@ -96,7 +98,7 @@ export function AnalysisResults({
       {categoryBreakdown}
 
       {/* Strengths */}
-      <CollapsibleCard title="Strengths">
+      <CollapsibleCard title={t('strengths')}>
         <ul role="list" aria-label="Strengths list" className="space-y-2 mt-2">
           {strengths.map((item, i) => (
             <li key={i} className="flex items-start gap-2 text-base text-gray-300">
@@ -109,7 +111,7 @@ export function AnalysisResults({
 
       {/* Weaknesses — hidden if empty */}
       {weaknesses.length > 0 && (
-        <CollapsibleCard title="Areas to Improve">
+        <CollapsibleCard title={t('areasToImprove')}>
           <ul role="list" aria-label="Weaknesses list" className="space-y-2 mt-2">
             {weaknesses.map((item, i) => (
               <li key={i} className="flex items-start gap-2 text-base text-gray-300">
@@ -122,7 +124,7 @@ export function AnalysisResults({
       )}
 
       {/* Recommendations */}
-      <CollapsibleCard title="Recommendations">
+      <CollapsibleCard title={t('recommendations')}>
         <ol role="list" aria-label="Recommendations list" className="space-y-2 mt-2">
           {recommendations.map((item, i) => (
             <li key={i} className="flex items-start gap-3 text-base text-gray-300">

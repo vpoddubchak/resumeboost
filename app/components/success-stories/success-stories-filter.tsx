@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 interface FilterGroupProps {
   label: string;
   options: string[];
@@ -9,6 +11,7 @@ interface FilterGroupProps {
 }
 
 function FilterGroup({ label, options, selected, onChange, formatLabel }: FilterGroupProps) {
+  const tc = useTranslations('common');
   const format = formatLabel ?? ((v: string) => v.charAt(0).toUpperCase() + v.slice(1));
 
   return (
@@ -18,7 +21,7 @@ function FilterGroup({ label, options, selected, onChange, formatLabel }: Filter
       </span>
       {['all', ...options].map((option) => {
         const isSelected = selected === option;
-        const displayLabel = option === 'all' ? 'All' : format(option);
+        const displayLabel = option === 'all' ? tc('all') : format(option);
 
         return (
           <button
@@ -66,16 +69,18 @@ export function SuccessStoriesFilter({
   onIndustryChange,
   onOutcomeChange,
 }: SuccessStoriesFilterProps) {
+  const t = useTranslations('stories');
+
   return (
     <div className="space-y-3">
       <FilterGroup
-        label="Filter by Industry"
+        label={t('filterByIndustry')}
         options={industryOptions}
         selected={selectedIndustry}
         onChange={onIndustryChange}
       />
       <FilterGroup
-        label="Filter by Outcome"
+        label={t('filterByOutcome')}
         options={outcomeOptions}
         selected={selectedOutcome}
         onChange={onOutcomeChange}
