@@ -20,6 +20,7 @@
     "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed:stories": "tsx prisma/seed-success-stories.ts",
     "build:docs": "echo 'Documentation generation skipped - use swagger-jsdoc manually'",
     "prepare": "husky"
   },

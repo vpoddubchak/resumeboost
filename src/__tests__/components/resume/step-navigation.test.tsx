@@ -90,6 +90,13 @@ describe('StepNavigation', () => {
     expect(portfolioLink).toHaveAttribute('href', '/portfolio');
   });
 
+  it('should render Success Stories link in header', () => {
+    render(<StepNavigation />);
+    const successStoriesLink = screen.getByRole('link', { name: 'Success Stories' });
+    expect(successStoriesLink).toBeInTheDocument();
+    expect(successStoriesLink).toHaveAttribute('href', '/success-stories');
+  });
+
   it('should display step numbers for non-completed steps', () => {
     render(<StepNavigation />);
     expect(screen.getByText('2')).toBeInTheDocument();

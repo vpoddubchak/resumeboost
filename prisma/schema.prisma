@@ -134,6 +134,24 @@ model PortfolioContent {
   @@map("portfolio_content")
 }
 
+// Success stories table for testimonials and case studies
+model SuccessStory {
+  story_id          Int      @id @default(autoincrement())
+  client_name       String   @db.VarChar(100)
+  client_role       String?  @db.VarChar(100)
+  industry          String   @db.VarChar(50)
+  challenge         String   // TEXT — before-state problem description
+  solution          String   // TEXT — what ResumeBoost did
+  results           String   // TEXT — measurable outcomes narrative
+  testimonial_quote String?  // TEXT — client quote
+  outcome_type      String   @db.VarChar(50) // e.g., "career-change", "salary-increase"
+  metrics           Json?    // Structured: { salaryIncrease: "25%", interviewsSecured: 5 }
+  is_featured       Boolean  @default(false)
+  created_at        DateTime @default(now())
+
+  @@map("success_stories")
+}
+
 // Analytics table for tracking
 model Analytics {
   analytics_id Int      @id @default(autoincrement())

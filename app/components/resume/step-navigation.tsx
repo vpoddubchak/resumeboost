@@ -43,6 +43,12 @@ export function StepNavigation() {
         >
           Portfolio
         </Link>
+        <Link
+          href="/success-stories"
+          className="text-sm text-gray-400 hover:text-blue-400 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none rounded px-1"
+        >
+          Success Stories
+        </Link>
       </div>
 
       <nav className="flex items-center gap-0.5 sm:gap-1" aria-label="Progress steps">

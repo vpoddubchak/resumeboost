@@ -1,18 +1,18 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import prisma from '@/app/lib/prisma';
-import { PortfolioGallery } from '@/app/components/portfolio/portfolio-gallery';
+import { SuccessStoriesGallery } from '@/app/components/success-stories/success-stories-gallery';
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'Portfolio | ResumeBoost',
+  title: 'Success Stories | ResumeBoost',
   description:
-    'Browse our portfolio of improved resume examples and see the quality of work possible with ResumeBoost.',
+    'Browse real client success stories and testimonials. See how ResumeBoost helped professionals land their dream roles with measurable results.',
 };
 
-export default async function PortfolioPage() {
-  const items = await prisma.portfolioContent.findMany({
+export default async function SuccessStoriesPage() {
+  const items = await prisma.successStory.findMany({
     orderBy: [{ is_featured: 'desc' }, { created_at: 'desc' }],
   });
 
@@ -30,10 +30,10 @@ export default async function PortfolioPage() {
           <ul className="flex items-center gap-2">
             <li>
               <Link
-                href="/success-stories"
+                href="/portfolio"
                 className="min-h-[44px] inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 focus-visible:outline-none"
               >
-                Success Stories
+                Portfolio
               </Link>
             </li>
             <li>
@@ -52,14 +52,14 @@ export default async function PortfolioPage() {
       <main className="flex-1 px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-white">Resume Portfolio</h1>
+            <h1 className="text-2xl font-bold text-white">Success Stories</h1>
             <p className="text-base text-gray-400 mt-1">
-              Browse our gallery of improved resume examples to see what&apos;s possible
+              Real outcomes from real clients — see what&apos;s possible with ResumeBoost
             </p>
           </div>
 
-          <section aria-label="Portfolio gallery">
-            <PortfolioGallery items={items} />
+          <section aria-label="Success stories">
+            <SuccessStoriesGallery items={items} />
           </section>
         </div>
       </main>
